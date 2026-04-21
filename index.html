@@ -173,6 +173,17 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
 .pay-steps{margin:8px 0 16px;display:flex;flex-direction:column;gap:8px}
 .pay-step{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45;color:var(--c-text)}
 .pay-n{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--c-gold);color:var(--c-primary-dark);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.hogar-count{margin-left:auto;background:var(--c-primary);color:white;font-size:11px;padding:2px 8px;border-radius:10px;min-width:22px;text-align:center;font-weight:600;letter-spacing:0}
+.hogar-item{display:flex;gap:10px;align-items:center;padding:10px;background:var(--c-bg);border-radius:var(--radius-sm);margin-bottom:8px}
+.hogar-item-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--c-gold) 0%,var(--c-gold-dark) 100%);color:var(--c-primary-dark);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;flex-shrink:0}
+.hogar-item-avatar.mascota{background:linear-gradient(135deg,#A7BEAE 0%,#6D8B7F 100%);color:white;font-size:18px}
+.hogar-item-info{flex:1;min-width:0}
+.hogar-item-name{font-size:14px;font-weight:600;color:var(--c-text);line-height:1.2}
+.hogar-item-meta{font-size:12px;color:var(--c-text-muted);margin-top:2px}
+.hogar-item-actions{display:flex;gap:4px;flex-shrink:0}
+.hogar-item-actions button{padding:6px 10px;font-size:12px;width:auto;min-width:0;background:transparent;border:1px solid var(--c-border);color:var(--c-text);border-radius:6px;cursor:pointer;font-family:inherit}
+.hogar-item-actions button.danger{color:var(--c-danger);border-color:#FCA5A5}
+.hogar-empty{font-size:13px;color:var(--c-text-muted);text-align:center;padding:14px 0}
 
 .register-hero{text-align:center;padding:20px 0 28px}
 .register-hero .logo-big{width:76px;height:76px;margin:0 auto 14px;background:linear-gradient(135deg,var(--c-primary) 0%,var(--c-primary-dark) 100%);border-radius:20px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg)}
@@ -462,6 +473,11 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
       <div class="service-info"><div class="t">Nuevo chip de ingreso</div><div class="s">Reposición o chip adicional</div></div>
       <div class="arrow">›</div>
     </button>
+    <button class="service-tile" onclick="showScreen('hogar')">
+      <div class="service-icon gold">🏠</div>
+      <div class="service-info"><div class="t">Notificar habitante o mascota</div><div class="s">Registra nuevos integrantes de tu hogar</div></div>
+      <div class="arrow">›</div>
+    </button>
     <button class="service-tile" onclick="openSolicitud('mantenimiento')">
       <div class="service-icon">🔧</div>
       <div class="service-info"><div class="t">Reporte de mantenimiento</div><div class="s">Daños en zonas comunes</div></div>
@@ -590,6 +606,36 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
 
     <div class="section-title">Mis comprobantes enviados</div>
     <div id="comp-hist-list"></div>
+  </div>
+</section>
+
+<!-- HOGAR -->
+<section class="screen" id="screen-hogar">
+  <div class="section-title">Mi hogar</div>
+  <div class="info-banner">
+    Registra las personas y mascotas que viven contigo. Esta información se guarda <b>solo en tu dispositivo</b> y puedes notificarla a la administración cuando quieras.
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">👥</span> Personas <span id="hogar-personas-count" class="hogar-count">0</span></div>
+    <div id="hogar-personas-list"></div>
+    <button class="btn btn-primary btn-sm" onclick="openHogarModal('persona')" style="width:auto;margin-top:10px">+ Agregar persona</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🐾</span> Mascotas <span id="hogar-mascotas-count" class="hogar-count">0</span></div>
+    <div id="hogar-mascotas-list"></div>
+    <button class="btn btn-primary btn-sm" onclick="openHogarModal('mascota')" style="width:auto;margin-top:10px">+ Agregar mascota</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">📧</span> Notificar a administración</div>
+    <p style="font-size:13px;color:var(--c-text-muted);margin-bottom:12px">
+      Envía a la administración la composición actual de tu hogar. Útil cuando llega un nuevo habitante o adoptas una mascota. Se genera un consecutivo único como cualquier otra solicitud.
+    </p>
+    <button class="btn btn-success" onclick="notificarHogar()">📧 Enviar notificación</button>
   </div>
 </section>
 
@@ -803,7 +849,7 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
   <div class="admin-tab" data-tab-content="datos" style="display:none">
     <div class="card">
       <div class="card-title"><span class="ico">📊</span> Estado de la app</div>
-      <div class="info-row"><span class="lbl">Versión</span><span class="val">3.0 Final</span></div>
+      <div class="info-row"><span class="lbl">Versión</span><span class="val">4.0</span></div>
       <div class="info-row"><span class="lbl">Datos remotos</span><span class="val" id="adm-stat-remote">—</span></div>
       <div class="info-row"><span class="lbl">Noticias locales</span><span class="val" id="adm-stat-news">—</span></div>
       <div class="info-row"><span class="lbl">Solicitudes enviadas</span><span class="val" id="adm-stat-req">—</span></div>
@@ -863,7 +909,22 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
 
 <script>
 /* =================== CONSTANTS =================== */
-const K = { USER:'emn_user', CONFIG:'emn_config', NEWS:'emn_news', HIST:'emn_hist', COMP:'emn_comp' };
+const APP_VERSION = '4.0';
+// K.USER = perfil del residente (solo dispositivo)
+// K.HIST = historial local de solicitudes (solo dispositivo)
+// K.COMP = historial local de comprobantes (solo dispositivo)
+// K.SEQ  = contador de consecutivo local (solo dispositivo) — aislado de la configuración
+// K.HOGAR = integrantes del hogar (personas + mascotas, solo dispositivo)
+// K.CONFIG_DRAFT = borrador de configuración del administrador (solo panel admin)
+// K.NEWS_DRAFT   = borrador de noticias del administrador (solo panel admin)
+// K.CONFIG y K.NEWS son legacy (v3) — se migran automáticamente al draft en v4
+const K = {
+  USER:'emn_user', HIST:'emn_hist', COMP:'emn_comp',
+  SEQ:'emn_seq', HOGAR:'emn_hogar',
+  CONFIG_DRAFT:'emn_config_draft', NEWS_DRAFT:'emn_news_draft',
+  // Legacy keys (migrados al arrancar v4)
+  CONFIG:'emn_config', NEWS:'emn_news',
+};
 const DATOS_URL = './datos.json';
 
 const DEFAULTS = {
@@ -1286,10 +1347,12 @@ const store = {
 
 let state = {
   user: null, config: null, news: [], hist: [], comp: [],
+  hogar: { personas: [], mascotas: [] },
   adminOk: false, currentSolicitud: null,
   hdrTapCount: 0, hdrTapTimer: null,
   remoteLoaded: false,
   compFile: null, compFileDataUrl: null,
+  editingHogar: null,
 };
 
 /* =================== HELPERS =================== */
@@ -1322,7 +1385,9 @@ function migrateUser(u) {
       });
     }
   }
-  if (typeof u.consecutivo !== 'number') u.consecutivo = (store.get(K.HIST,[]).length + store.get(K.COMP,[]).length);
+  // v4: consecutivo ya no vive en state.user — se usa K.SEQ. Se preserva el valor
+  // antiguo como referencia y se sembrará K.SEQ desde aquí en loadLocal().
+  if (typeof u.consecutivo !== 'number') u.consecutivo = 0;
   delete u.torre; delete u.apto; delete u.placas;
   return u;
 }
@@ -1336,15 +1401,58 @@ function migrateConfig(c) {
   return c;
 }
 
+function migrateHogar(h) {
+  if (!h || typeof h !== 'object') return { personas: [], mascotas: [] };
+  if (!Array.isArray(h.personas)) h.personas = [];
+  if (!Array.isArray(h.mascotas)) h.mascotas = [];
+  return h;
+}
+
+// Migración única v3 → v4: pasa K.CONFIG/K.NEWS a K.CONFIG_DRAFT/K.NEWS_DRAFT
+// para que dejen de pelear con datos.json. Las llaves viejas se borran tras migrar.
+function migrateV3ToV4() {
+  const legacyConfig = store.get(K.CONFIG, null);
+  if (legacyConfig && !store.get(K.CONFIG_DRAFT, null)) {
+    // Sólo migrar si existe algún valor no-default (evitar crear un draft vacío
+    // a residentes que nunca tocaron config)
+    const hasCustom = legacyConfig && Object.keys(legacyConfig).length > 0;
+    if (hasCustom) store.set(K.CONFIG_DRAFT, legacyConfig);
+  }
+  store.rm(K.CONFIG);
+
+  const legacyNews = store.get(K.NEWS, null);
+  if (Array.isArray(legacyNews) && legacyNews.length && !store.get(K.NEWS_DRAFT, null)) {
+    store.set(K.NEWS_DRAFT, legacyNews);
+  }
+  store.rm(K.NEWS);
+}
+
 /* =================== LOAD & SAVE =================== */
 function loadLocal() {
+  migrateV3ToV4();
   state.user = migrateUser(store.get(K.USER, null));
   if (state.user) store.set(K.USER, state.user);
-  const rawConfig = migrateConfig(store.get(K.CONFIG, {}));
-  state.config = Object.assign({}, DEFAULTS, rawConfig);
-  state.news = store.get(K.NEWS, null);
+
+  // Config y news: arrancamos con defaults. Remote sobreescribe en loadRemote().
+  // Si el admin tiene un draft local, se aplica encima como vista previa.
+  const draftConfig = migrateConfig(store.get(K.CONFIG_DRAFT, null));
+  state.config = Object.assign({}, DEFAULTS, draftConfig || {});
+
+  const draftNews = store.get(K.NEWS_DRAFT, null);
+  state.news = Array.isArray(draftNews) ? draftNews : [];
+
   state.hist = store.get(K.HIST, []);
   state.comp = store.get(K.COMP, []);
+  state.hogar = migrateHogar(store.get(K.HOGAR, null));
+  store.set(K.HOGAR, state.hogar);
+
+  // Sembrar K.SEQ. Si el usuario v3 ya tenía un consecutivo, úsalo.
+  const existingSeq = store.get(K.SEQ, null);
+  if (!existingSeq && state.user) {
+    const n = (state.user.consecutivo || 0) +
+              (Array.isArray(state.hist) ? state.hist.length : 0);
+    store.set(K.SEQ, { bloque: state.user.bloque, casa: state.user.casa, n });
+  }
 }
 
 async function loadRemote() {
@@ -1353,13 +1461,21 @@ async function loadRemote() {
     const resp = await fetch(url, { cache: 'no-store' });
     if (!resp.ok) return false;
     const remote = await resp.json();
-    const localConfig = store.get(K.CONFIG, null);
+
+    // datos.json es la fuente de verdad para config y news.
+    // El draft del administrador (si existe) se aplica encima SOLO para que él
+    // pueda ver sus cambios antes de publicarlos al repositorio.
+    const draftConfig = migrateConfig(store.get(K.CONFIG_DRAFT, null));
     if (remote.config) {
-      state.config = Object.assign({}, DEFAULTS, remote.config, localConfig || {});
+      state.config = Object.assign({}, DEFAULTS, remote.config, draftConfig || {});
     }
+
+    const draftNews = store.get(K.NEWS_DRAFT, null);
     if (Array.isArray(remote.news)) {
-      state.news = (state.news && state.news.length) ? state.news : remote.news;
+      // Preferir draft si el admin está editando; si no, usar el remoto.
+      state.news = (Array.isArray(draftNews) && draftNews.length) ? draftNews : remote.news;
     }
+
     state.remoteLoaded = true;
     return true;
   } catch (e) {
@@ -1384,6 +1500,7 @@ function showScreen(id) {
   if (id === 'info') renderInfo();
   if (id === 'solicitudes') renderHist();
   if (id === 'comprobantes') renderCompHist();
+  if (id === 'hogar') renderHogar();
   if (id === 'admin') renderAdmin();
   if (id === 'register') {
     renderVehiculosInputs();
@@ -1612,11 +1729,34 @@ function llamarEmergencia() {
 }
 
 /* =================== CONSECUTIVO =================== */
+// v4: el consecutivo vive en K.SEQ (llave independiente del perfil y de la
+// configuración). Generar una solicitud NUNCA toca K.CONFIG/K.NEWS ni datos.json.
+function getSeq() {
+  if (!state.user) return { bloque: '', casa: '', n: 0 };
+  const seq = store.get(K.SEQ, null) ||
+              { bloque: state.user.bloque, casa: state.user.casa, n: 0 };
+  // Si cambió el bloque/casa (traslado), seguimos con el mismo contador pero
+  // actualizamos los marcadores para el nuevo código.
+  seq.bloque = state.user.bloque;
+  seq.casa = state.user.casa;
+  if (typeof seq.n !== 'number') seq.n = 0;
+  return seq;
+}
+
+function peekNextConsecutivo() {
+  const seq = getSeq();
+  return `EM-${seq.bloque}-${seq.casa}-${pad3((seq.n || 0) + 1)}`;
+}
+
 function getNextConsecutivo() {
   if (!state.user) return null;
-  state.user.consecutivo = (state.user.consecutivo || 0) + 1;
+  const seq = getSeq();
+  seq.n = (seq.n || 0) + 1;
+  store.set(K.SEQ, seq);
+  // Espejo en user.consecutivo solo para mostrar en carnet — no se usa para nada más.
+  state.user.consecutivo = seq.n;
   store.set(K.USER, state.user);
-  return `EM-${state.user.bloque}-${state.user.casa}-${pad3(state.user.consecutivo)}`;
+  return `EM-${seq.bloque}-${seq.casa}-${pad3(seq.n)}`;
 }
 
 /* =================== SOLICITUDES =================== */
@@ -1628,7 +1768,7 @@ function openSolicitud(tipo) {
   $('modal-icon').textContent = s.icon;
   $('modal-title').textContent = s.title;
 
-  const nextRef = `EM-${state.user.bloque}-${state.user.casa}-${pad3((state.user.consecutivo||0)+1)}`;
+  const nextRef = peekNextConsecutivo();
   let html = `<div class="modal-ref"><div style="color:var(--c-text-muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Consecutivo de esta solicitud</div><b>${nextRef}</b></div>`;
   html += `<p style="font-size:13px;color:var(--c-text-muted);margin-bottom:12px">${s.intro}</p>`;
 
@@ -1729,6 +1869,270 @@ function renderHist() {
       <div class="hist-date">${fmtDateTime(h.date)} · Correo</div>
       ${h.snippet ? `<div class="hist-body">${escapeHtml(h.snippet)}…</div>` : ''}
     </div>`).join('');
+}
+
+/* =================== HOGAR =================== */
+const PARENTESCOS = ['Cónyuge','Hijo/a','Padre','Madre','Hermano/a','Abuelo/a','Nieto/a','Tío/a','Primo/a','Empleado/a del servicio','Otro'];
+const ANIMALES = ['Perro','Gato','Ave','Pez','Roedor','Otro'];
+
+function renderHogar() {
+  if (!state.hogar) state.hogar = { personas: [], mascotas: [] };
+  $('hogar-personas-count').textContent = state.hogar.personas.length;
+  $('hogar-mascotas-count').textContent = state.hogar.mascotas.length;
+
+  const pl = $('hogar-personas-list');
+  if (!state.hogar.personas.length) {
+    pl.innerHTML = '<div class="hogar-empty">Aún no has registrado personas en tu hogar.</div>';
+  } else {
+    pl.innerHTML = state.hogar.personas.map(p => `
+      <div class="hogar-item">
+        <div class="hogar-item-avatar">${escapeHtml(initials(p.nombre))}</div>
+        <div class="hogar-item-info">
+          <div class="hogar-item-name">${escapeHtml(p.nombre)}</div>
+          <div class="hogar-item-meta">${escapeHtml(p.parentesco || '—')}${p.tel ? ' · ' + escapeHtml(p.tel) : ''}</div>
+        </div>
+        <div class="hogar-item-actions">
+          <button onclick="editHogar('persona','${p.id}')">✏️</button>
+          <button class="danger" onclick="deleteHogar('persona','${p.id}')">🗑</button>
+        </div>
+      </div>`).join('');
+  }
+
+  const ml = $('hogar-mascotas-list');
+  if (!state.hogar.mascotas.length) {
+    ml.innerHTML = '<div class="hogar-empty">Aún no has registrado mascotas en tu hogar.</div>';
+  } else {
+    ml.innerHTML = state.hogar.mascotas.map(m => `
+      <div class="hogar-item">
+        <div class="hogar-item-avatar mascota">${m.tipo === 'Gato' ? '🐱' : m.tipo === 'Perro' ? '🐶' : m.tipo === 'Ave' ? '🐦' : m.tipo === 'Pez' ? '🐟' : m.tipo === 'Roedor' ? '🐹' : '🐾'}</div>
+        <div class="hogar-item-info">
+          <div class="hogar-item-name">${escapeHtml(m.nombre)}</div>
+          <div class="hogar-item-meta">${escapeHtml(m.tipo || '—')}${m.raza ? ' · ' + escapeHtml(m.raza) : ''}${m.edad ? ' · ' + escapeHtml(m.edad) : ''}</div>
+        </div>
+        <div class="hogar-item-actions">
+          <button onclick="editHogar('mascota','${m.id}')">✏️</button>
+          <button class="danger" onclick="deleteHogar('mascota','${m.id}')">🗑</button>
+        </div>
+      </div>`).join('');
+  }
+}
+
+function openHogarModal(tipo, existing) {
+  state.editingHogar = { tipo, id: existing ? existing.id : null };
+  $('modal-icon').textContent = tipo === 'persona' ? '👤' : '🐾';
+  $('modal-title').textContent = (existing ? 'Editar ' : 'Agregar ') + (tipo === 'persona' ? 'persona' : 'mascota');
+
+  let html = '';
+  if (tipo === 'persona') {
+    const e = existing || {};
+    html = `
+      <label class="field-label">Nombre completo <span class="req">*</span></label>
+      <input id="h-nombre" type="text" value="${escapeHtml(e.nombre||'')}" autocapitalize="words">
+      <div class="row-2">
+        <div>
+          <label class="field-label">Parentesco</label>
+          <select id="h-parentesco">${PARENTESCOS.map(p => `<option value="${p}" ${e.parentesco===p?'selected':''}>${p}</option>`).join('')}</select>
+        </div>
+        <div>
+          <label class="field-label">Edad</label>
+          <input id="h-edad" type="text" value="${escapeHtml(e.edad||'')}" inputmode="numeric" placeholder="Años">
+        </div>
+      </div>
+      <label class="field-label">Documento (opcional)</label>
+      <div class="row-2">
+        <select id="h-tipoDoc">
+          <option value="CC" ${e.tipoDoc==='CC'?'selected':''}>CC</option>
+          <option value="TI" ${e.tipoDoc==='TI'?'selected':''}>TI</option>
+          <option value="CE" ${e.tipoDoc==='CE'?'selected':''}>CE</option>
+          <option value="RC" ${e.tipoDoc==='RC'?'selected':''}>RC (Registro Civil)</option>
+          <option value="Pasaporte" ${e.tipoDoc==='Pasaporte'?'selected':''}>Pasaporte</option>
+        </select>
+        <input id="h-doc" type="text" value="${escapeHtml(e.doc||'')}" placeholder="Número">
+      </div>
+      <label class="field-label">Teléfono (opcional)</label>
+      <input id="h-tel" type="tel" value="${escapeHtml(e.tel||'')}" inputmode="tel" placeholder="3XXXXXXXXX">
+      <label class="field-label">Observaciones</label>
+      <textarea id="h-obs" rows="2" placeholder="Condiciones médicas relevantes, necesidades especiales, etc.">${escapeHtml(e.obs||'')}</textarea>`;
+  } else {
+    const e = existing || {};
+    html = `
+      <label class="field-label">Nombre <span class="req">*</span></label>
+      <input id="h-nombre" type="text" value="${escapeHtml(e.nombre||'')}" autocapitalize="words">
+      <div class="row-2">
+        <div>
+          <label class="field-label">Tipo <span class="req">*</span></label>
+          <select id="h-tipo">${ANIMALES.map(a => `<option value="${a}" ${e.tipo===a?'selected':''}>${a}</option>`).join('')}</select>
+        </div>
+        <div>
+          <label class="field-label">Tamaño</label>
+          <select id="h-tamano">
+            <option value="">—</option>
+            <option value="Pequeño" ${e.tamano==='Pequeño'?'selected':''}>Pequeño</option>
+            <option value="Mediano" ${e.tamano==='Mediano'?'selected':''}>Mediano</option>
+            <option value="Grande" ${e.tamano==='Grande'?'selected':''}>Grande</option>
+          </select>
+        </div>
+      </div>
+      <div class="row-2">
+        <div>
+          <label class="field-label">Raza</label>
+          <input id="h-raza" type="text" value="${escapeHtml(e.raza||'')}" placeholder="Mestizo, Poodle, etc.">
+        </div>
+        <div>
+          <label class="field-label">Edad</label>
+          <input id="h-edad" type="text" value="${escapeHtml(e.edad||'')}" placeholder="Ej. 2 años">
+        </div>
+      </div>
+      <label class="field-label">Color / descripción física</label>
+      <input id="h-color" type="text" value="${escapeHtml(e.color||'')}" placeholder="Ej. Blanco con manchas cafés">
+      <label class="field-label">Vacunación</label>
+      <select id="h-vacunas">
+        <option value="Al día" ${e.vacunas==='Al día'?'selected':''}>Al día</option>
+        <option value="Parcial" ${e.vacunas==='Parcial'?'selected':''}>Parcial</option>
+        <option value="Pendiente" ${e.vacunas==='Pendiente'?'selected':''}>Pendiente</option>
+        <option value="No aplica" ${e.vacunas==='No aplica'?'selected':''}>No aplica</option>
+      </select>
+      <label class="field-label">Observaciones</label>
+      <textarea id="h-obs" rows="2" placeholder="Comportamiento, cuidados especiales, etc.">${escapeHtml(e.obs||'')}</textarea>`;
+  }
+
+  html += `
+    <div style="margin-top:18px">
+      <button class="btn btn-primary" onclick="saveHogar()">💾 Guardar</button>
+      <div style="height:8px"></div>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+    </div>`;
+
+  $('modal-body').innerHTML = html;
+  $('modal-backdrop').classList.add('show');
+}
+
+function saveHogar() {
+  if (!state.editingHogar) return;
+  const { tipo, id } = state.editingHogar;
+  const nombre = $('h-nombre').value.trim();
+  if (!nombre) { toast('El nombre es obligatorio', 'error'); return; }
+
+  const base = id
+    ? state.hogar[tipo === 'persona' ? 'personas' : 'mascotas'].find(x => x.id === id)
+    : { id: Date.now().toString(), registrado: Date.now() };
+  if (!base) return;
+
+  if (tipo === 'persona') {
+    base.nombre = nombre;
+    base.parentesco = $('h-parentesco').value;
+    base.edad = $('h-edad').value.trim();
+    base.tipoDoc = $('h-tipoDoc').value;
+    base.doc = $('h-doc').value.trim();
+    base.tel = $('h-tel').value.trim();
+    base.obs = $('h-obs').value.trim();
+    if (!id) state.hogar.personas.push(base);
+  } else {
+    base.nombre = nombre;
+    base.tipo = $('h-tipo').value;
+    base.tamano = $('h-tamano').value;
+    base.raza = $('h-raza').value.trim();
+    base.edad = $('h-edad').value.trim();
+    base.color = $('h-color').value.trim();
+    base.vacunas = $('h-vacunas').value;
+    base.obs = $('h-obs').value.trim();
+    if (!id) state.hogar.mascotas.push(base);
+  }
+
+  store.set(K.HOGAR, state.hogar);
+  closeModal();
+  renderHogar();
+  toast(id ? 'Registro actualizado' : 'Registro agregado', 'success');
+}
+
+function editHogar(tipo, id) {
+  const list = state.hogar[tipo === 'persona' ? 'personas' : 'mascotas'];
+  const item = list.find(x => x.id === id);
+  if (!item) return;
+  openHogarModal(tipo, item);
+}
+
+function deleteHogar(tipo, id) {
+  const key = tipo === 'persona' ? 'personas' : 'mascotas';
+  const item = state.hogar[key].find(x => x.id === id);
+  if (!item) return;
+  if (!confirm(`¿Eliminar "${item.nombre}" de tu hogar?`)) return;
+  state.hogar[key] = state.hogar[key].filter(x => x.id !== id);
+  store.set(K.HOGAR, state.hogar);
+  renderHogar();
+  toast('Registro eliminado');
+}
+
+function notificarHogar() {
+  if (!state.user) { showScreen('register'); return; }
+  if (!state.hogar.personas.length && !state.hogar.mascotas.length) {
+    toast('Agrega al menos una persona o mascota antes de notificar', 'error');
+    return;
+  }
+  const ref = getNextConsecutivo();
+  const u = state.user;
+
+  const lineasPersonas = state.hogar.personas.length
+    ? state.hogar.personas.map((p,i) =>
+`${i+1}. ${p.nombre}
+   Parentesco: ${p.parentesco || '—'}
+   Edad: ${p.edad || '—'}
+   Documento: ${p.tipoDoc ? p.tipoDoc + ' ' + (p.doc || '—') : '—'}
+   Teléfono: ${p.tel || '—'}
+   Observaciones: ${p.obs || '(ninguna)'}`).join('\n\n')
+    : '(Sin personas registradas)';
+
+  const lineasMascotas = state.hogar.mascotas.length
+    ? state.hogar.mascotas.map((m,i) =>
+`${i+1}. ${m.nombre} (${m.tipo || 'Mascota'})
+   Raza: ${m.raza || '—'}
+   Tamaño: ${m.tamano || '—'}
+   Edad: ${m.edad || '—'}
+   Color: ${m.color || '—'}
+   Vacunación: ${m.vacunas || '—'}
+   Observaciones: ${m.obs || '(ninguna)'}`).join('\n\n')
+    : '(Sin mascotas registradas)';
+
+  const msg =
+`NOTIFICACIÓN DE INTEGRANTES DEL HOGAR
+Consecutivo: ${ref}
+
+Residente titular: ${u.nombre}
+Documento: ${u.tipoDoc} ${u.doc}
+Bloque/Casa: ${u.bloque} / ${u.casa}
+Teléfono: ${u.tel}
+Correo: ${u.email}
+
+PERSONAS QUE VIVEN EN LA UNIDAD
+${lineasPersonas}
+
+MASCOTAS
+${lineasMascotas}
+
+Total de habitantes (sin incluir al titular): ${state.hogar.personas.length}
+Total de mascotas: ${state.hogar.mascotas.length}
+
+Enviado desde la App Oficial del Conjunto El Mañana.`;
+
+  state.hist.unshift({
+    id: Date.now().toString(),
+    tipo: 'hogar',
+    title: 'Notificación de integrantes del hogar',
+    canal: 'email',
+    ref,
+    snippet: `Hogar: ${state.hogar.personas.length} persona(s) y ${state.hogar.mascotas.length} mascota(s).`,
+    date: Date.now(),
+  });
+  if (state.hist.length > 80) state.hist.pop();
+  store.set(K.HIST, state.hist);
+
+  const subj = `[${ref}] Notificación de hogar — ${u.nombre} (Bloque ${u.bloque}·Casa ${u.casa})`;
+  const to = state.config.email_1;
+  const cc = [state.config.email_2, u.email].filter(Boolean).join(',');
+  if (!to) { toast('Admin no ha configurado correo principal', 'error'); return; }
+  const url = `mailto:${to}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+  toast('Notificación ' + ref + ' preparada', 'success');
 }
 
 /* =================== COMPROBANTES =================== */
@@ -1912,10 +2316,12 @@ function saveAdminConfig() {
     pwd: val('adm-pwd') || DEFAULTS.pwd,
   };
   state.config = Object.assign({}, DEFAULTS, c);
-  store.set(K.CONFIG, c);
+  // v4: el admin guarda solo en el DRAFT local. La configuración publicada vive
+  // en datos.json y no se toca jamás desde aquí.
+  store.set(K.CONFIG_DRAFT, c);
   $('hdr-title').textContent = state.config.nombre;
   $('hdr-subtitle').textContent = state.config.subtitulo || '';
-  toast('Configuración guardada', 'success');
+  toast('Configuración guardada como borrador. Genera datos.json para publicarla.', 'success');
 }
 
 function saveNews() {
@@ -1926,9 +2332,9 @@ function saveNews() {
   if (!title || !body) { toast('Título y contenido son obligatorios', 'error'); return; }
   if (!state.news) state.news = [];
   state.news.unshift({ id: Date.now().toString(), title, body, img, tag, date: Date.now() });
-  store.set(K.NEWS, state.news);
+  store.set(K.NEWS_DRAFT, state.news);
   $('news-title').value = ''; $('news-body').value = ''; $('news-img').value = ''; $('news-tag').value = '';
-  toast('Noticia publicada localmente. Recuerda "Generar datos.json" para publicarla a todos.', 'success');
+  toast('Noticia guardada como borrador. Genera datos.json para publicarla a todos.', 'success');
   renderAdminNewsList();
 }
 
@@ -1954,9 +2360,9 @@ function renderAdminNewsList() {
 function deleteNews(id) {
   if (!confirm('¿Eliminar esta noticia?')) return;
   state.news = state.news.filter(n => n.id !== id);
-  store.set(K.NEWS, state.news);
+  store.set(K.NEWS_DRAFT, state.news);
   renderAdminNewsList();
-  toast('Noticia eliminada');
+  toast('Noticia eliminada del borrador');
 }
 
 /* =================== DATOS.JSON PUBLISH =================== */
@@ -1964,7 +2370,7 @@ function generarDatosJson() {
   const publicConfig = Object.assign({}, state.config);
   delete publicConfig.pwd;
   const data = {
-    version: 1,
+    version: APP_VERSION,
     updated: new Date().toISOString(),
     config: publicConfig,
     news: state.news || [],
@@ -1976,19 +2382,26 @@ function generarDatosJson() {
   a.download = 'datos.json';
   a.click();
   URL.revokeObjectURL(url);
-  toast('datos.json descargado. Súbelo a tu repositorio GitHub.', 'success');
+  toast('datos.json descargado. Súbelo al repositorio GitHub para publicar.', 'success');
+}
+
+// Borra los borradores locales del admin. Se usa cuando el admin ya subió
+// datos.json al repo y quiere que la app use exclusivamente la versión remota.
+function descartarBorradores() {
+  if (!confirm('¿Descartar tus borradores locales y usar solo la versión publicada en el repositorio?')) return;
+  store.rm(K.CONFIG_DRAFT);
+  store.rm(K.NEWS_DRAFT);
+  loadLocal();
+  loadRemote().then(() => { renderAdmin(); renderHome(); });
+  toast('Borradores descartados', 'success');
 }
 
 async function recargarDesdeRepositorio() {
   toast('Consultando repositorio…');
   const ok = await loadRemote();
   if (ok) {
-    // Clear local overrides so remote wins for the next renders
-    store.rm(K.CONFIG);
-    store.rm(K.NEWS);
-    loadLocal();
-    await loadRemote();
     renderAdmin();
+    renderHome();
     toast('Cargado desde el repositorio', 'success');
   } else {
     toast('No se encontró datos.json en el repositorio', 'error');
@@ -1998,8 +2411,14 @@ async function recargarDesdeRepositorio() {
 /* =================== BACKUP =================== */
 function exportBackup() {
   const data = {
-    user: state.user, config: state.config, news: state.news, hist: state.hist, comp: state.comp,
-    v: '3.0', exported: Date.now(),
+    user: state.user,
+    configDraft: store.get(K.CONFIG_DRAFT, null),
+    newsDraft: store.get(K.NEWS_DRAFT, null),
+    hist: state.hist,
+    comp: state.comp,
+    hogar: state.hogar,
+    seq: store.get(K.SEQ, null),
+    v: APP_VERSION, exported: Date.now(),
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -2018,15 +2437,20 @@ function importBackup(e) {
   reader.onload = function() {
     try {
       const data = JSON.parse(reader.result);
-      if (!confirm('¿Restaurar esta copia? Se reemplazarán los datos actuales.')) return;
+      if (!confirm('¿Restaurar esta copia? Se reemplazarán los datos locales (perfil, historial, hogar, borradores). La configuración publicada en datos.json NO se toca.')) return;
       if (data.user) store.set(K.USER, migrateUser(data.user));
-      if (data.config) store.set(K.CONFIG, migrateConfig(data.config));
-      if (data.news) store.set(K.NEWS, data.news);
+      // Soporte para backups v3 (config/news sueltos) y v4 (configDraft/newsDraft)
+      if (data.configDraft) store.set(K.CONFIG_DRAFT, migrateConfig(data.configDraft));
+      else if (data.config) store.set(K.CONFIG_DRAFT, migrateConfig(data.config));
+      if (data.newsDraft) store.set(K.NEWS_DRAFT, data.newsDraft);
+      else if (data.news) store.set(K.NEWS_DRAFT, data.news);
       if (data.hist) store.set(K.HIST, data.hist);
       if (data.comp) store.set(K.COMP, data.comp);
+      if (data.hogar) store.set(K.HOGAR, migrateHogar(data.hogar));
+      if (data.seq) store.set(K.SEQ, data.seq);
       loadLocal();
+      loadRemote().then(() => { renderAdmin(); renderHome(); });
       toast('Copia restaurada', 'success');
-      renderAdmin();
     } catch (err) { toast('Archivo inválido', 'error'); }
   };
   reader.readAsText(file);
@@ -2034,7 +2458,7 @@ function importBackup(e) {
 }
 
 function confirmWipe() {
-  if (!confirm('⚠️ Esto borrará TODOS los datos locales (usuario, config, noticias, historial, comprobantes). ¿Continuar?')) return;
+  if (!confirm('⚠️ Esto borrará TODOS los datos locales (perfil, hogar, historial, comprobantes, consecutivo y borradores del administrador). La configuración publicada en datos.json no se toca. ¿Continuar?')) return;
   if (!confirm('Esta acción NO se puede deshacer. ¿Estás completamente seguro?')) return;
   Object.values(K).forEach(k => store.rm(k));
   toast('Datos borrados', 'success');
