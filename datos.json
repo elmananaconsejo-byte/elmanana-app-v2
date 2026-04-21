@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "updated": "2026-04-21T16:40:31.582Z",
+  "config": {
+    "nombre": "Conjunto El Mañana",
+    "subtitulo": "Hogares de Soacha",
+    "direccion": "Soacha, Cundinamarca",
+    "hero_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR68qyX-Qh8m8GZ7RvhtXT9Puzm7t3eqRRH6ug2syNgHrmZuOEh_AtuNvI&s=10",
+    "email_1": "giober302@gmail.com",
+    "email_2": "consejoelmanana@gmail.com",
+    "email_contador": "contadorelmanana@gmail.com",
+    "whats": "3016587740",
+    "porteria": "3016587740",
+    "emergencia": "123",
+    "hor_lun": "3:00 p.m. – 7:00 p.m.",
+    "hor_mar": "8:00 a.m. – 12:00 m.",
+    "hor_mie": "3:00 p.m. – 6:00 p.m.",
+    "hor_jue": "Cerrado",
+    "hor_vie": "5:00 p.m. – 8:00 p.m.",
+    "hor_sab": "1:00 p.m. – 3:00 p.m.",
+    "hor_dom": "Cerrado",
+    "hor_salon": "10:00 a.m. – 11:00 p.m. (con reserva previa)",
+    "hor_zonas": "6:00 a.m. – 10:00 p.m.",
+    "hor_basura": "Martes, jueves y sábado a partir de las 6:00 p.m.",
+    "descripcion": "Conjunto residencial ubicado en el municipio de Soacha, Cundinamarca. Forma parte del proyecto Hogares de Soacha. Cuenta con zonas comunes, salón social, parqueaderos y portería con vigilancia permanente.\n\nPersonaliza este texto desde el panel de administración.",
+    "reglamento": "1. Cumplir los horarios de zonas comunes.\n2. Respetar a los vecinos y empleados del conjunto.\n3. Controlar el volumen de música y eventos, especialmente después de las 10:00 p.m.\n4. Asear los espacios comunes después de usarlos.\n5. Reportar cualquier daño en portería o a la administración.\n6. Las mascotas deben salir siempre con correa y sus dueños son responsables del aseo.\n7. No se permite arrojar basuras fuera de los horarios y sitios designados.\n\nEste reglamento puede ser actualizado desde el panel de administración.",
+    "hor_admin": "Lun–Vie 8:00 a.m. – 5:00 p.m. / Sáb 9:00 a.m. – 12:00 m."
+  },
+  "news": [
+    {
+      "id": "1776789626038",
+      "title": "Boletín Informativo 1er Trimestre 2026",
+      "body": "La gestión de este informe también fue publicado en nuestro canal de WhatsApp.",
+      "img": "https://postimg.cc/4H5G98mV",
+      "tag": "Comunicado",
+      "date": 1776789626038
+    },
+    {
+      "id": "1776784706225",
+      "title": "No excedas el límite de velocidad",
+      "body": "Cuida a los tuyos",
+      "img": "https://i.postimg.cc/3x5FKqR1/PHOTO-2026-04-20-16-26-34.jpg",
+      "tag": "Seguridad",
+      "date": 1776784706225
+    },
+    {
+      "id": "1",
+      "tag": "Bienvenida",
+      "title": "¡Bienvenido a la app oficial del conjunto!",
+      "img": "",
+      "body": "Esta es la app oficial del Conjunto El Mañana. Aquí podrás consultar tu carnet digital, realizar trámites como reserva de salón, paz y salvo y estado de cuenta, así como estar al tanto de las noticias y comunicados de la administración.\n\nEl administrador publicará las novedades del conjunto en esta sección.",
+      "date": 1776784083334
+    }
+  ]
+}
