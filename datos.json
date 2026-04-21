@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "updated": "2026-04-21T18:20:49.960Z",
+  "updated": "2026-04-21T18:41:37.321Z",
   "config": {
     "nombre": "Conjunto El Mañana",
-    "subtitulo": "Hogares de Soacha",
-    "direccion": "Soacha, Cundinamarca",
+    "subtitulo": "Hogares de Soacha · 240 residencias",
+    "direccion": "Carrera 17 N°4-35 sur, Ciudadela Hogares, Soacha, Cundinamarca",
     "hero_img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR68qyX-Qh8m8GZ7RvhtXT9Puzm7t3eqRRH6ug2syNgHrmZuOEh_AtuNvI&s=10",
-    "email_1": "giober302@gmail.com",
+    "email_1": "elmananaconjunto244@gmail.com",
     "email_2": "consejoelmanana@gmail.com",
     "email_contador": "contadorelmanana@gmail.com",
     "whats": "573058387125",
@@ -19,37 +19,20 @@
     "hor_vie": "5:00 p.m. – 8:00 p.m.",
     "hor_sab": "1:00 p.m. – 3:00 p.m.",
     "hor_dom": "Cerrado",
-    "hor_salon": "10:00 a.m. – 11:00 p.m. (con reserva previa)",
+    "hor_salon": "8:00 a.m. – 11:00 p.m. (reserva con 48 h de anticipación)",
     "hor_zonas": "6:00 a.m. – 10:00 p.m.",
-    "hor_basura": "Lunes, Miércoles, Viernes y Domingos a partir de las 5:00 p.m.",
-    "descripcion": "Conjunto residencial ubicado en el municipio de Soacha, Cundinamarca. Forma parte del proyecto Hogares de Soacha. Cuenta con zonas comunes, salón social, parqueaderos y portería con vigilancia permanente.\n\nPersonaliza este texto desde el panel de administración.",
-    "reglamento": "1. Cumplir los horarios de zonas comunes \n2. Respetar a los vecinos y empleados del conjunto.\n3. Controlar el volumen de música y eventos, especialmente después de las 10:00 p.m.\n4. Asear los espacios comunes después de usarlos.\n5. Reportar cualquier daño en portería o a la administración.\n6. Las mascotas deben salir siempre con correa y sus dueños son responsables del aseo.\n7. No se permite arrojar basuras fuera de los horarios y sitios designados.\n\nEste reglamento puede ser actualizado desde el panel de administración.",
-    "hor_admin": "Lun–Vie 8:00 a.m. – 5:00 p.m. / Sáb 9:00 a.m. – 12:00 m."
+    "hor_basura": "Según horario asignado por la administración",
+    "descripcion": "Conjunto Residencial El Mañana. 240 residencias ubicadas en la Carrera 17 N°4-35 sur, Ciudadela Hogares de Soacha, Cundinamarca.\n\nCuenta con salón social, parqueaderos, zonas verdes, portería con vigilancia permanente y todos los servicios para una convivencia tranquila.\n\nForma parte del proyecto Hogares de Soacha.",
+    "reglamento": "RESUMEN DEL MANUAL DE CONVIVENCIA\n\n🐾 MASCOTAS\n• Identificación previa de la mascota ante la Administración\n• Vacunaciones al día y uso obligatorio de correa en zonas comunes\n• Propietario responsable por daños y aseo de excrementos\n• No se permite cría de animales.\n\n🚗 PARQUEADEROS\n• Solo residentes en los espacios asignados\n• Prohibido reparar o hacer mantenimiento a vehículos.\n• No obstruir pasillos ni accesos de emergencia.\n• No fumar ni poner música alta en vehículos.\n• Visitantes: se reportarse en portería y pagan parqueadero.\n\n🎉 SALÓN SOCIAL\n• Reserva con mínimo 48 horas de anticipación\n• Horario de uso: 10:00 a.m. – 11:00 p.m.\n• Limpieza obligatoria al finalizar\n• Prohibido sin autorización: bebidas alcohólicas, juegos de azar, actividades comerciales.\n• Responsable asume daños causados del salón.\n\n🗑️ BASURAS\n• Usar bolsas cerradas y herméticas en contenedores designados\n• No tirar basura desde ventanas ni fuera de horario.\n• Escombros requieren autorización y recolección especial\n\n🔊 RUIDOS\n• Lunes a viernes: 8:00 a.m. – 6:00 p.m. (obras/ruido permitido)\n• Sábado: 8:00 a.m. – 1:00 p.m.\n• Domingo: prohibido hacer ruido / obras.\n• Fiestas: máximo hasta las 10:00 p.m.\n• Prohibida amplificación de sonido sin autorización.\n\n🛡️ SEGURIDAD\n• Todo visitante debe reportarse en portería\n• Residente es responsable por sus visitantes.\n• Prohibido permitir entrada a desconocidos y sin autorización de un residente.\n\n💵 PAGOS DE ADMINISTRACIÓN\n• Cuota mensual obligatoria.\n• Intereses de mora y posible cobro coactivo por incumplimiento\n• Paz y salvo requerido para venta, trámites notariales o mudanzas.\n\n📦 MUDANZAS\n• Autorización con 48 horas de anticipación\n• Horario: L–V 8:00 a.m. – 5:00 p.m. / Sáb 8:00 a.m. – 1:00 p.m.\n• Domingos y festivos: prohibido\n\n🔨 REFORMAS\n• Requieren notificación a la administración.\n• Prohibido modificar fachadas.\n\n⚖️ SANCIONES\n• Faltas leves: amonestación verbal → escrita → multa\n• Faltas graves: multa + restricción de áreas comunes.\n• Faltas muy graves: demanda coactiva y otras acciones legales.\n• Derecho a impugnar en 48 h ante el Consejo.\n• Comité de Convivencia media conflictos.\n\nMarco legal: Ley 675/2001 · Código Nacional de Policía 1801/2016\nVigencia del manual: Abril 2021 (MC-001)\n\nEl manual completo está disponible en la administración."
   },
   "news": [
     {
-      "id": "1776794567327",
-      "title": "Boletín Trimestral El Mañana",
-      "body": "Este también fue compartido por nuestro canal de WhatsApp.",
-      "img": "https://i.postimg.cc/d3wrk5D4/01092e75-71aa-4770-b5e2-dcc4e185ba85.jpg",
-      "tag": "Comunicado",
-      "date": 1776794567327
-    },
-    {
-      "id": "1776784706225",
-      "title": "No excedas el límite de velocidad",
-      "body": "Cuida a los tuyos",
-      "img": "https://i.postimg.cc/3x5FKqR1/PHOTO-2026-04-20-16-26-34.jpg",
+      "id": "1776796852856",
+      "title": "El cuidado es de todos",
+      "body": "Recuerda que la velocidad máxima establecida por el manual de convivencia es de 5km/h",
+      "img": "https://i.postimg.cc/ydDJ52ty/PHOTO-2026-04-20-16-26-34.jpg",
       "tag": "Seguridad",
-      "date": 1776784706225
-    },
-    {
-      "id": "1",
-      "tag": "Bienvenida",
-      "title": "¡Bienvenido a la app oficial del conjunto!",
-      "img": "",
-      "body": "Esta es la app oficial del Conjunto El Mañana. Aquí podrás consultar tu carnet digital, realizar trámites como reserva de salón, paz y salvo y estado de cuenta, así como estar al tanto de las noticias y comunicados de la administración.\n\nEl administrador publicará las novedades del conjunto en esta sección.",
-      "date": 1776784083334
+      "date": 1776796852856
     }
   ]
 }
