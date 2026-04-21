@@ -1,0 +1,1664 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="El Mañana">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1F3A68">
+<title>Conjunto El Mañana — App Oficial</title>
+
+<link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Conjunto%20El%20Ma%C3%B1ana%22%2C%22short_name%22%3A%22El%20Ma%C3%B1ana%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%231F3A68%22%2C%22theme_color%22%3A%22%231F3A68%22%2C%22orientation%22%3A%22portrait%22%2C%22lang%22%3A%22es-CO%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%3Bcharset%3Dutf-8%2C%253Csvg%2520xmlns%3D%2522http%253A%252F%252Fwww.w3.org%252F2000%252Fsvg%2522%2520viewBox%253D%25220%25200%2520192%2520192%2522%253E%253Crect%2520width%253D%2522192%2522%2520height%253D%2522192%2522%2520rx%253D%252232%2522%2520fill%253D%2522%25231F3A68%2522%252F%253E%253Ctext%2520x%253D%252296%2522%2520y%253D%2522115%2522%2520text-anchor%253D%2522middle%2522%2520font-size%253D%252268%2522%2520font-family%253D%2522Georgia%2522%2520font-weight%253D%2522bold%2522%2520fill%253D%2522%2523C9A961%2522%253EEM%253C%252Ftext%253E%253C%252Fsvg%253E%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+
+<link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%231F3A68'/%3E%3Ctext x='96' y='115' text-anchor='middle' font-size='68' font-family='Georgia' font-weight='bold' fill='%23C9A961'%3EEM%3C/text%3E%3C/svg%3E">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --c-primary: #1F3A68;
+  --c-primary-dark: #152847;
+  --c-primary-light: #2B4F89;
+  --c-gold: #C9A961;
+  --c-gold-dark: #A88A44;
+  --c-bg: #F4F6FB;
+  --c-card: #FFFFFF;
+  --c-text: #1A1D2E;
+  --c-text-muted: #6B7280;
+  --c-border: #E5E7EB;
+  --c-success: #10B981;
+  --c-danger: #EF4444;
+  --c-warning: #F59E0B;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 10px 25px rgba(31,58,104,0.15);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html, body {
+  height: 100%;
+  background: var(--c-bg);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--c-text);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: contain;
+}
+
+body { display: flex; flex-direction: column; min-height: 100vh; }
+
+.app-header {
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-dark) 100%);
+  color: white;
+  padding: calc(var(--safe-top) + 14px) 16px 14px;
+  box-shadow: var(--shadow-md);
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; gap: 12px;
+  user-select: none;
+}
+.app-header .logo {
+  width: 38px; height: 38px; background: var(--c-gold);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-family: Georgia, serif; font-weight: bold; font-size: 17px;
+  color: var(--c-primary-dark);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+.app-header .brand { flex: 1; min-width: 0; }
+.app-header h1 {
+  font-size: 16px; font-weight: 700; letter-spacing: 0.2px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.app-header .subtitle {
+  font-size: 11px; opacity: 0.8; letter-spacing: 0.5px; text-transform: uppercase;
+}
+
+main {
+  flex: 1;
+  padding: 16px 16px calc(84px + var(--safe-bottom));
+  max-width: 560px; width: 100%; margin: 0 auto;
+  overflow-x: hidden;
+}
+
+.screen { display: none; animation: fadeIn 0.2s ease-out; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.card {
+  background: var(--c-card); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm); padding: 16px; margin-bottom: 12px;
+}
+.card-title {
+  font-size: 14px; font-weight: 700; color: var(--c-primary);
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.card-title .ico { font-size: 18px; }
+
+.hero {
+  position: relative; height: 180px;
+  border-radius: var(--radius-lg); overflow: hidden;
+  margin-bottom: 16px; box-shadow: var(--shadow-md);
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-light) 100%);
+}
+.hero-img {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  background-color: var(--c-primary);
+}
+.hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(31,58,104,0.35) 0%, rgba(21,40,71,0.85) 100%);
+}
+.hero-content {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 16px; color: white;
+}
+.hero-eyebrow {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--c-gold); font-weight: 600;
+}
+.hero-title {
+  font-size: 22px; font-weight: 700; margin-top: 4px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+.hero-sub { font-size: 13px; opacity: 0.9; margin-top: 2px; }
+
+.quick-actions {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 8px; margin-bottom: 16px;
+}
+.qa-item {
+  background: var(--c-card); border-radius: var(--radius-md);
+  padding: 12px 6px; text-align: center; box-shadow: var(--shadow-sm);
+  border: none; cursor: pointer; transition: transform 0.1s;
+  font-family: inherit;
+}
+.qa-item:active { transform: scale(0.95); }
+.qa-icon {
+  width: 40px; height: 40px; margin: 0 auto 6px;
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-light) 100%);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.qa-label { font-size: 11px; color: var(--c-text); font-weight: 600; line-height: 1.2; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 20px;
+  border: none; border-radius: var(--radius-sm);
+  font-size: 15px; font-weight: 600; cursor: pointer; text-decoration: none;
+  transition: all 0.15s; width: 100%; font-family: inherit;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-light) 100%);
+  color: white; box-shadow: 0 2px 8px rgba(31,58,104,0.3);
+}
+.btn-primary:active { transform: translateY(1px); box-shadow: 0 1px 4px rgba(31,58,104,0.3); }
+.btn-gold {
+  background: linear-gradient(135deg, var(--c-gold) 0%, var(--c-gold-dark) 100%);
+  color: var(--c-primary-dark); box-shadow: 0 2px 8px rgba(201,169,97,0.3);
+}
+.btn-secondary {
+  background: var(--c-card); color: var(--c-primary);
+  border: 1.5px solid var(--c-border);
+}
+.btn-danger { background: var(--c-danger); color: white; }
+.btn-ghost { background: transparent; color: var(--c-primary); border: 1.5px solid transparent; }
+.btn-sm { padding: 8px 14px; font-size: 13px; }
+
+label.field-label {
+  display: block; font-size: 13px; font-weight: 600;
+  color: var(--c-text); margin-bottom: 6px; margin-top: 12px;
+}
+label.field-label .req { color: var(--c-danger); }
+input, select, textarea {
+  width: 100%; padding: 11px 13px;
+  border: 1.5px solid var(--c-border); border-radius: var(--radius-sm);
+  font-size: 15px; font-family: inherit; color: var(--c-text);
+  background: white; transition: border-color 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none; border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px rgba(31,58,104,0.1);
+}
+textarea { resize: vertical; min-height: 90px; }
+.field-hint { font-size: 12px; color: var(--c-text-muted); margin-top: 4px; }
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.carnet {
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-dark) 50%, #0F1E3A 100%);
+  border-radius: 20px; padding: 20px; color: white;
+  position: relative; overflow: hidden;
+  box-shadow: var(--shadow-lg); margin-bottom: 12px;
+}
+.carnet::before {
+  content: ''; position: absolute; top: -30px; right: -30px;
+  width: 150px; height: 150px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,169,97,0.2) 0%, transparent 70%);
+}
+.carnet::after {
+  content: ''; position: absolute; bottom: -40px; left: -40px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+}
+.carnet-hdr {
+  display: flex; align-items: center; gap: 10px;
+  padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.15);
+  margin-bottom: 14px; position: relative; z-index: 1;
+}
+.carnet-logo {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--c-gold); display: flex; align-items: center; justify-content: center;
+  font-family: Georgia, serif; font-weight: bold; color: var(--c-primary-dark);
+}
+.carnet-meta { flex: 1; }
+.carnet-meta .t1 { font-size: 11px; letter-spacing: 1px; opacity: 0.85; text-transform: uppercase; }
+.carnet-meta .t2 { font-size: 14px; font-weight: 600; }
+.carnet-body { display: flex; gap: 14px; position: relative; z-index: 1; }
+.carnet-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-gold) 0%, var(--c-gold-dark) 100%);
+  color: var(--c-primary-dark);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 700;
+  border: 3px solid rgba(255,255,255,0.25);
+  flex-shrink: 0;
+}
+.carnet-info { flex: 1; min-width: 0; }
+.carnet-info .name { font-size: 18px; font-weight: 700; line-height: 1.25; margin-bottom: 4px; word-wrap: break-word; }
+.carnet-info .role { font-size: 11px; color: var(--c-gold); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.carnet-info .field { font-size: 13px; opacity: 0.95; margin-bottom: 2px; }
+.carnet-info .field b { opacity: 0.7; font-weight: 500; }
+.carnet-stamp {
+  position: absolute; right: 14px; bottom: 14px;
+  padding: 4px 10px; border: 1.5px solid var(--c-gold);
+  border-radius: 4px; font-size: 10px; font-weight: 700;
+  color: var(--c-gold); letter-spacing: 1.5px;
+  transform: rotate(-6deg); z-index: 2;
+}
+.carnet-qr {
+  margin-top: 14px; padding-top: 14px;
+  border-top: 1px dashed rgba(255,255,255,0.2);
+  display: flex; gap: 12px; align-items: center;
+  position: relative; z-index: 1;
+}
+.carnet-qr .qr-placeholder {
+  width: 60px; height: 60px; background: white; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--c-primary-dark); font-size: 28px;
+}
+.carnet-qr .qr-text { font-size: 11px; opacity: 0.85; line-height: 1.4; }
+
+.news-item {
+  background: var(--c-card); border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm); margin-bottom: 12px; overflow: hidden;
+}
+.news-img {
+  width: 100%; height: 140px;
+  background-size: cover; background-position: center;
+  background-color: var(--c-border);
+}
+.news-body { padding: 14px; }
+.news-date { font-size: 11px; color: var(--c-text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.news-title { font-size: 16px; font-weight: 700; color: var(--c-primary); margin: 4px 0 6px; }
+.news-body-text { font-size: 14px; color: var(--c-text); line-height: 1.5; }
+.news-tag {
+  display: inline-block; padding: 2px 8px;
+  background: var(--c-gold); color: var(--c-primary-dark);
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  border-radius: 4px; text-transform: uppercase; margin-bottom: 6px;
+}
+
+.service-grid { display: grid; gap: 10px; }
+.service-tile {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--c-card); border: 1.5px solid var(--c-border);
+  border-radius: var(--radius-md); padding: 14px;
+  cursor: pointer; text-align: left;
+  width: 100%; font-family: inherit; transition: all 0.15s;
+}
+.service-tile:active { transform: scale(0.99); }
+.service-tile:hover, .service-tile:focus {
+  border-color: var(--c-primary); box-shadow: var(--shadow-sm); outline: none;
+}
+.service-icon {
+  width: 44px; height: 44px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-light) 100%);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.service-icon.gold { background: linear-gradient(135deg, var(--c-gold) 0%, var(--c-gold-dark) 100%); color: var(--c-primary-dark); }
+.service-info { flex: 1; min-width: 0; }
+.service-info .t { font-size: 15px; font-weight: 600; color: var(--c-text); }
+.service-info .s { font-size: 12px; color: var(--c-text-muted); margin-top: 2px; }
+.service-tile .arrow { color: var(--c-text-muted); font-size: 18px; }
+
+.hist-item {
+  background: var(--c-card); border-left: 3px solid var(--c-primary);
+  padding: 10px 12px; border-radius: 6px; margin-bottom: 8px;
+  box-shadow: var(--shadow-sm);
+}
+.hist-item .hist-type {
+  font-size: 11px; color: var(--c-primary); font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.hist-item .hist-subject { font-size: 14px; font-weight: 600; margin-top: 2px; }
+.hist-item .hist-date { font-size: 11px; color: var(--c-text-muted); margin-top: 4px; }
+.hist-item .hist-body { font-size: 13px; color: var(--c-text-muted); margin-top: 4px; }
+
+.info-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--c-border);
+  font-size: 14px;
+}
+.info-row:last-child { border-bottom: none; }
+.info-row .lbl { color: var(--c-text-muted); }
+.info-row .val { color: var(--c-text); font-weight: 600; text-align: right; }
+.contact-btn {
+  background: none; border: none; color: var(--c-primary);
+  font-weight: 600; cursor: pointer; font-size: 14px;
+  padding: 0; font-family: inherit; text-decoration: underline;
+}
+
+nav.bottom-nav {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  background: white;
+  padding: 6px 4px calc(6px + var(--safe-bottom));
+  display: flex; justify-content: space-around;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+  z-index: 100; border-top: 1px solid var(--c-border);
+}
+.nav-btn {
+  flex: 1; border: none; background: none;
+  padding: 8px 2px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  color: var(--c-text-muted); font-family: inherit;
+  transition: color 0.15s;
+}
+.nav-btn.active { color: var(--c-primary); }
+.nav-btn .ni { font-size: 20px; }
+.nav-btn .nl { font-size: 10px; font-weight: 600; letter-spacing: 0.3px; }
+
+#toast {
+  position: fixed; bottom: calc(100px + var(--safe-bottom));
+  left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--c-primary-dark); color: white;
+  padding: 12px 20px; border-radius: 10px;
+  font-size: 14px; font-weight: 500;
+  box-shadow: var(--shadow-lg); z-index: 200;
+  opacity: 0; transition: all 0.25s;
+  pointer-events: none; max-width: 90%; text-align: center;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast.success { background: var(--c-success); }
+#toast.error { background: var(--c-danger); }
+
+.modal-backdrop {
+  display: none;
+  position: fixed; inset: 0; background: rgba(21,40,71,0.65);
+  z-index: 150; align-items: flex-end; justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.modal-backdrop.show { display: flex; animation: fadeIn 0.2s; }
+.modal {
+  background: white; width: 100%; max-width: 500px;
+  border-radius: 20px 20px 0 0; padding: 20px;
+  padding-bottom: calc(20px + var(--safe-bottom));
+  max-height: 85vh; overflow-y: auto;
+  animation: slideUp 0.25s ease-out;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-title {
+  font-size: 18px; font-weight: 700; color: var(--c-primary);
+  margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
+}
+.modal-close {
+  background: var(--c-bg); border: none;
+  width: 32px; height: 32px; border-radius: 50%;
+  cursor: pointer; font-size: 18px; color: var(--c-text-muted);
+  margin-left: auto;
+}
+
+.empty {
+  text-align: center; padding: 32px 16px;
+  color: var(--c-text-muted);
+}
+.empty .emj { font-size: 42px; margin-bottom: 8px; }
+.empty .t { font-size: 15px; font-weight: 600; color: var(--c-text); }
+.empty .s { font-size: 13px; margin-top: 4px; }
+
+.section-title {
+  font-size: 11px; font-weight: 700; color: var(--c-text-muted);
+  text-transform: uppercase; letter-spacing: 1px;
+  margin: 16px 0 10px; padding-left: 2px;
+}
+.section-title:first-child { margin-top: 0; }
+.divider { height: 1px; background: var(--c-border); margin: 14px 0; }
+
+.welcome-box {
+  background: var(--c-card); border-radius: var(--radius-md);
+  padding: 14px; margin-bottom: 16px; box-shadow: var(--shadow-sm);
+  display: flex; align-items: center; gap: 12px;
+}
+.welcome-avatar {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-light) 100%);
+  color: white; font-weight: 700; font-size: 20px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.welcome-text .hi { font-size: 13px; color: var(--c-text-muted); }
+.welcome-text .n { font-size: 16px; font-weight: 700; color: var(--c-text); }
+
+.admin-badge {
+  display: inline-block; background: var(--c-gold);
+  color: var(--c-primary-dark); font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px; margin-left: 8px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.tabs {
+  display: flex; gap: 4px; margin-bottom: 14px; background: var(--c-card);
+  padding: 4px; border-radius: 10px; box-shadow: var(--shadow-sm);
+}
+.tab-btn {
+  flex: 1; padding: 8px 10px; border: none; background: none;
+  border-radius: 8px; font-size: 13px; font-weight: 600;
+  color: var(--c-text-muted); cursor: pointer; font-family: inherit;
+}
+.tab-btn.active { background: var(--c-primary); color: white; }
+
+.register-hero { text-align: center; padding: 20px 0 28px; }
+.register-hero .logo-big {
+  width: 76px; height: 76px; margin: 0 auto 14px;
+  background: linear-gradient(135deg, var(--c-primary) 0%, var(--c-primary-dark) 100%);
+  border-radius: 20px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-lg);
+}
+.register-hero .logo-big span {
+  font-family: Georgia, serif; font-weight: bold;
+  font-size: 32px; color: var(--c-gold);
+}
+.register-hero h2 { font-size: 22px; color: var(--c-primary); margin-bottom: 4px; }
+.register-hero p { font-size: 14px; color: var(--c-text-muted); }
+</style>
+</head>
+
+<body>
+
+<header class="app-header" id="app-header">
+  <div class="logo" id="hdr-logo">EM</div>
+  <div class="brand">
+    <h1 id="hdr-title">Conjunto El Mañana</h1>
+    <div class="subtitle" id="hdr-subtitle">Hogares de Soacha</div>
+  </div>
+</header>
+
+<main>
+
+<!-- REGISTER -->
+<section class="screen" id="screen-register">
+  <div class="register-hero">
+    <div class="logo-big"><span>EM</span></div>
+    <h2>Conjunto El Mañana</h2>
+    <p>App oficial de residentes</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">👤</span> Registro de residente</div>
+    <p style="font-size:13px;color:var(--c-text-muted);margin-bottom:12px">
+      Registra tus datos una sola vez. Esta información queda guardada en tu celular y se usa para
+      generar tu carnet digital y prellenar tus solicitudes.
+    </p>
+
+    <label class="field-label">Nombre completo <span class="req">*</span></label>
+    <input id="reg-nombre" type="text" placeholder="Nombres y apellidos" autocapitalize="words">
+
+    <label class="field-label">Tipo y número de documento <span class="req">*</span></label>
+    <div class="row-2">
+      <select id="reg-tipo-doc">
+        <option value="CC">CC</option>
+        <option value="CE">CE</option>
+        <option value="TI">TI</option>
+        <option value="Pasaporte">Pasaporte</option>
+      </select>
+      <input id="reg-doc" type="text" placeholder="Número" inputmode="numeric">
+    </div>
+
+    <div class="row-2">
+      <div>
+        <label class="field-label">Torre / Bloque <span class="req">*</span></label>
+        <input id="reg-torre" type="text" placeholder="Ej. 5" autocapitalize="characters">
+      </div>
+      <div>
+        <label class="field-label">Apartamento <span class="req">*</span></label>
+        <input id="reg-apto" type="text" placeholder="Ej. 302" inputmode="numeric">
+      </div>
+    </div>
+
+    <label class="field-label">Tipo de residente <span class="req">*</span></label>
+    <select id="reg-rol">
+      <option value="Propietario">Propietario</option>
+      <option value="Arrendatario">Arrendatario</option>
+      <option value="Familiar">Familiar del propietario</option>
+    </select>
+
+    <label class="field-label">Teléfono de contacto <span class="req">*</span></label>
+    <input id="reg-tel" type="tel" placeholder="3XXXXXXXXX" inputmode="tel">
+
+    <label class="field-label">Correo electrónico</label>
+    <input id="reg-email" type="email" placeholder="correo@ejemplo.com (opcional)" inputmode="email">
+
+    <label class="field-label">Placas de vehículos</label>
+    <input id="reg-placas" type="text" placeholder="ABC123, XYZ456 (opcional)" autocapitalize="characters">
+    <div class="field-hint">Separa varias placas con coma. Útil para el registro en portería.</div>
+
+    <div style="margin-top: 18px">
+      <button class="btn btn-primary" onclick="doRegister()">Crear mi cuenta</button>
+    </div>
+  </div>
+
+  <div class="card" style="background: #FFFBEB; border: 1px solid #FDE68A">
+    <div style="font-size:13px;color:#92400E;line-height:1.6">
+      <b>Aviso:</b> Tus datos quedan guardados únicamente en este dispositivo. No se envían a ningún
+      servidor. Solo se transmiten cuando tú generas una solicitud, y solo hacia el administrador mediante el mensaje que tú autorices.
+    </div>
+  </div>
+</section>
+
+<!-- HOME -->
+<section class="screen" id="screen-home">
+  <div class="hero" id="hero-banner">
+    <div class="hero-img" id="hero-img"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Bienvenido a</div>
+      <div class="hero-title" id="hero-name">Conjunto El Mañana</div>
+      <div class="hero-sub" id="hero-sub">Hogares de Soacha</div>
+    </div>
+  </div>
+
+  <div class="welcome-box">
+    <div class="welcome-avatar" id="wel-avatar">·</div>
+    <div class="welcome-text">
+      <div class="hi">Hola,</div>
+      <div class="n" id="wel-name">Residente</div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <button class="qa-item" onclick="showScreen('carnet')">
+      <div class="qa-icon">🪪</div><div class="qa-label">Mi carnet</div>
+    </button>
+    <button class="qa-item" onclick="showScreen('solicitudes')">
+      <div class="qa-icon">📋</div><div class="qa-label">Trámites</div>
+    </button>
+    <button class="qa-item" onclick="showScreen('noticias')">
+      <div class="qa-icon">📰</div><div class="qa-label">Noticias</div>
+    </button>
+    <button class="qa-item" onclick="llamarPorteria()">
+      <div class="qa-icon">☎️</div><div class="qa-label">Portería</div>
+    </button>
+  </div>
+
+  <div class="section-title">Últimas noticias</div>
+  <div id="home-news-list"></div>
+
+  <div class="section-title">Accesos rápidos</div>
+  <div class="service-grid">
+    <button class="service-tile" onclick="openSolicitud('reserva-salon')">
+      <div class="service-icon gold">🎉</div>
+      <div class="service-info">
+        <div class="t">Reservar salón social</div>
+        <div class="s">Solicita fecha y hora para tu evento</div>
+      </div>
+      <div class="arrow">›</div>
+    </button>
+    <button class="service-tile" onclick="openSolicitud('paz-y-salvo')">
+      <div class="service-icon">📄</div>
+      <div class="service-info">
+        <div class="t">Paz y salvo administrativo</div>
+        <div class="s">Certificado al día con la administración</div>
+      </div>
+      <div class="arrow">›</div>
+    </button>
+    <button class="service-tile" onclick="openSolicitud('estado-cuenta')">
+      <div class="service-icon">💳</div>
+      <div class="service-info">
+        <div class="t">Estado de cuenta</div>
+        <div class="s">Consulta saldos y cuotas pendientes</div>
+      </div>
+      <div class="arrow">›</div>
+    </button>
+  </div>
+</section>
+
+<!-- CARNET -->
+<section class="screen" id="screen-carnet">
+  <div class="section-title">Carnet digital del residente</div>
+  <div class="carnet">
+    <div class="carnet-hdr">
+      <div class="carnet-logo">EM</div>
+      <div class="carnet-meta">
+        <div class="t1" id="carnet-conjunto-t1">Conjunto El Mañana</div>
+        <div class="t2">Carnet de residente</div>
+      </div>
+    </div>
+    <div class="carnet-body">
+      <div class="carnet-avatar" id="carnet-avatar">·</div>
+      <div class="carnet-info">
+        <div class="name" id="carnet-nombre">—</div>
+        <div class="role" id="carnet-rol">—</div>
+        <div class="field"><b>Doc:</b> <span id="carnet-doc">—</span></div>
+        <div class="field"><b>Torre/Apto:</b> <span id="carnet-ubic">—</span></div>
+        <div class="field"><b>Placas:</b> <span id="carnet-placas">—</span></div>
+      </div>
+    </div>
+    <div class="carnet-stamp">RESIDENTE ACTIVO</div>
+    <div class="carnet-qr">
+      <div class="qr-placeholder">🏢</div>
+      <div class="qr-text">
+        Muestra este carnet en portería para validar tu ingreso y el de tus vehículos.
+        Emitido: <span id="carnet-emitido"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">ℹ️</span> Información adicional</div>
+    <div class="info-row"><span class="lbl">Teléfono</span><span class="val" id="carnet-tel">—</span></div>
+    <div class="info-row"><span class="lbl">Correo</span><span class="val" id="carnet-email">—</span></div>
+    <div class="info-row"><span class="lbl">Fecha de registro</span><span class="val" id="carnet-fecha">—</span></div>
+  </div>
+
+  <button class="btn btn-secondary" onclick="exportarCarnet()">📤 Compartir carnet</button>
+  <div style="height:8px"></div>
+  <button class="btn btn-ghost" onclick="confirmLogout()" style="color:var(--c-danger)">Cerrar sesión y borrar datos</button>
+</section>
+
+<!-- SOLICITUDES -->
+<section class="screen" id="screen-solicitudes">
+  <div class="section-title">Trámites y solicitudes</div>
+  <p style="font-size:13px;color:var(--c-text-muted);margin-bottom:14px">
+    Selecciona el tipo de solicitud. Cada trámite se envía al administrador por WhatsApp o correo con un mensaje ya redactado.
+  </p>
+
+  <div class="service-grid">
+    <button class="service-tile" onclick="openSolicitud('reserva-salon')">
+      <div class="service-icon gold">🎉</div>
+      <div class="service-info"><div class="t">Reserva de salón social</div><div class="s">Eventos, reuniones, cumpleaños</div></div>
+      <div class="arrow">›</div>
+    </button>
+    <button class="service-tile" onclick="openSolicitud('estado-cuenta')">
+      <div class="service-icon">💳</div>
+      <div class="service-info"><div class="t">Estado de cuenta</div><div class="s">Saldo de administración, cuotas</div></div>
+      <div class="arrow">›</div>
+    </button>
+    <button class="service-tile" onclick="openSolicitud('paz-y-salvo')">
+      <div class="service-icon">📄</div>
+      <div class="service-info"><div class="t">Paz y salvo</div><div class="s">Para venta, refinanciación o trámites</div></div>
+      <div class="arrow">›</div>
+    </button>
+    <button class="service-tile" onclick="openSolicitud('certificado-residencia')">
+      <div class="service-icon">🏠</div>
+      <div class="service-info"><div class="t">Certificado de residencia</div><div class="s">Constancia de habitabilidad</div></div>
+      <div class="arrow">›</div>
+    </button>
+    <button class="service-tile" onclick="openSolicitud('autorizacion-ingreso')">
+      <div class="service-icon">🚪</div>
+      <div class="service-info"><div class="t">Autorización de ingreso</div><div class="s">Visitas, mudanzas, domicilios</div></div>
+      <div class="arrow">›</div>
+    </button>
+    <button class="service-tile" onclick="openSolicitud('mantenimiento')">
+      <div class="service-icon">🔧</div>
+      <div class="service-info"><div class="t">Reporte de mantenimiento</div><div class="s">Daños en zonas comunes</div></div>
+      <div class="arrow">›</div>
+    </button>
+    <button class="service-tile" onclick="openSolicitud('pqrs')">
+      <div class="service-icon">💬</div>
+      <div class="service-info"><div class="t">PQRS</div><div class="s">Peticiones, quejas, reclamos, sugerencias</div></div>
+      <div class="arrow">›</div>
+    </button>
+    <button class="service-tile" onclick="openSolicitud('otro')">
+      <div class="service-icon">📌</div>
+      <div class="service-info"><div class="t">Otro trámite</div><div class="s">Cualquier otra solicitud administrativa</div></div>
+      <div class="arrow">›</div>
+    </button>
+  </div>
+
+  <div class="section-title">Mis solicitudes recientes</div>
+  <div id="hist-list"></div>
+</section>
+
+<!-- NOTICIAS -->
+<section class="screen" id="screen-noticias">
+  <div class="section-title">Noticias e información de interés</div>
+  <div id="news-list"></div>
+</section>
+
+<!-- INFO -->
+<section class="screen" id="screen-info">
+  <div class="section-title">Información del conjunto</div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🏢</span> El conjunto</div>
+    <div id="info-descripcion" style="font-size:14px;line-height:1.6;color:var(--c-text)"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">📞</span> Contactos</div>
+    <div class="info-row"><span class="lbl">Administración</span><button class="contact-btn" onclick="contactarAdmin()" id="info-admin-whats">—</button></div>
+    <div class="info-row"><span class="lbl">Correo admin.</span><button class="contact-btn" onclick="contactarAdminCorreo()" id="info-admin-email">—</button></div>
+    <div class="info-row"><span class="lbl">Portería</span><button class="contact-btn" onclick="llamarPorteria()" id="info-porteria">—</button></div>
+    <div class="info-row"><span class="lbl">Emergencias</span><button class="contact-btn" onclick="llamarEmergencia()" id="info-emergencia">—</button></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">🕒</span> Horarios</div>
+    <div class="info-row"><span class="lbl">Administración</span><span class="val" id="horario-admin">—</span></div>
+    <div class="info-row"><span class="lbl">Salón social</span><span class="val" id="horario-salon">—</span></div>
+    <div class="info-row"><span class="lbl">Zonas comunes</span><span class="val" id="horario-zonas">—</span></div>
+    <div class="info-row"><span class="lbl">Recolección basura</span><span class="val" id="horario-basura">—</span></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="ico">📜</span> Manual de convivencia</div>
+    <div id="info-reglamento" style="font-size:14px;line-height:1.7;color:var(--c-text);white-space:pre-wrap"></div>
+  </div>
+
+  <div class="divider"></div>
+  <button class="btn btn-ghost" onclick="pedirAdmin()" style="font-size:13px">🔒 Ajustes de administrador</button>
+</section>
+
+<!-- ADMIN -->
+<section class="screen" id="screen-admin">
+  <div class="section-title">Panel de administración <span class="admin-badge">Admin</span></div>
+
+  <div class="tabs" id="admin-tabs">
+    <button class="tab-btn active" data-tab="config">Configuración</button>
+    <button class="tab-btn" data-tab="news">Noticias</button>
+    <button class="tab-btn" data-tab="info">Datos</button>
+  </div>
+
+  <div class="admin-tab" data-tab-content="config">
+    <div class="card">
+      <div class="card-title"><span class="ico">🏢</span> Identidad del conjunto</div>
+      <label class="field-label">Nombre del conjunto</label>
+      <input id="adm-nombre" type="text" placeholder="Conjunto El Mañana">
+      <label class="field-label">Subtítulo</label>
+      <input id="adm-subtitulo" type="text" placeholder="Hogares de Soacha">
+      <label class="field-label">URL de imagen del banner</label>
+      <input id="adm-hero-img" type="url" placeholder="https://..." inputmode="url">
+      <div class="field-hint">Pega el enlace directo a una foto del conjunto (JPG/PNG/WebP).</div>
+      <label class="field-label">Dirección</label>
+      <input id="adm-direccion" type="text" placeholder="Ej. Soacha, Cundinamarca">
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ico">📞</span> Contactos oficiales</div>
+      <label class="field-label">WhatsApp del administrador <span class="req">*</span></label>
+      <input id="adm-whats" type="tel" placeholder="573001234567" inputmode="numeric">
+      <div class="field-hint">Formato internacional sin + ni espacios. Colombia: 57XXXXXXXXXX.</div>
+      <label class="field-label">Correo del administrador</label>
+      <input id="adm-email" type="email" placeholder="administracion@ejemplo.com" inputmode="email">
+      <label class="field-label">Teléfono portería</label>
+      <input id="adm-porteria" type="tel" placeholder="3001234567" inputmode="tel">
+      <label class="field-label">Número de emergencia</label>
+      <input id="adm-emergencia" type="tel" placeholder="123 o número local" inputmode="tel">
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ico">🕒</span> Horarios</div>
+      <label class="field-label">Administración</label>
+      <input id="adm-hor-admin" type="text" placeholder="Lun–Vie 8:00 a.m. – 5:00 p.m.">
+      <label class="field-label">Salón social</label>
+      <input id="adm-hor-salon" type="text" placeholder="10:00 a.m. – 11:00 p.m.">
+      <label class="field-label">Zonas comunes</label>
+      <input id="adm-hor-zonas" type="text" placeholder="6:00 a.m. – 10:00 p.m.">
+      <label class="field-label">Recolección de basura</label>
+      <input id="adm-hor-basura" type="text" placeholder="Mar, Jue, Sáb 6:00 p.m.">
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ico">🏠</span> Descripción del conjunto</div>
+      <textarea id="adm-descripcion" rows="5" placeholder="Reseña, ubicación, cantidad de torres, amenidades…"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ico">📜</span> Manual de convivencia</div>
+      <textarea id="adm-reglamento" rows="8" placeholder="Normas principales del conjunto…"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ico">🔑</span> Contraseña de administrador</div>
+      <input id="adm-pwd" type="text" placeholder="Escribe una contraseña segura">
+      <div class="field-hint">Por defecto es <code>admin2026</code>. Si la cambias, recuérdala.</div>
+    </div>
+
+    <button class="btn btn-primary" onclick="saveAdminConfig()">💾 Guardar configuración</button>
+    <div style="height:8px"></div>
+    <button class="btn btn-secondary" onclick="showScreen('home')">Volver</button>
+  </div>
+
+  <div class="admin-tab" data-tab-content="news" style="display:none">
+    <div class="card">
+      <div class="card-title"><span class="ico">📰</span> Nueva noticia / anuncio</div>
+
+      <label class="field-label">Etiqueta (opcional)</label>
+      <select id="news-tag">
+        <option value="">Sin etiqueta</option>
+        <option value="Comunicado">Comunicado</option>
+        <option value="Asamblea">Asamblea</option>
+        <option value="Mantenimiento">Mantenimiento</option>
+        <option value="Evento">Evento</option>
+        <option value="Seguridad">Seguridad</option>
+        <option value="Urgente">Urgente</option>
+      </select>
+
+      <label class="field-label">Título <span class="req">*</span></label>
+      <input id="news-title" type="text" placeholder="Ej. Corte de agua programado">
+
+      <label class="field-label">URL de imagen (opcional)</label>
+      <input id="news-img" type="url" placeholder="https://...">
+
+      <label class="field-label">Contenido <span class="req">*</span></label>
+      <textarea id="news-body" rows="4" placeholder="Detalle de la noticia…"></textarea>
+
+      <button class="btn btn-primary" onclick="saveNews()" style="margin-top:14px">Publicar noticia</button>
+    </div>
+
+    <div class="section-title">Noticias publicadas</div>
+    <div id="admin-news-list"></div>
+
+    <div style="height:8px"></div>
+    <button class="btn btn-secondary" onclick="showScreen('home')">Volver</button>
+  </div>
+
+  <div class="admin-tab" data-tab-content="info" style="display:none">
+    <div class="card">
+      <div class="card-title"><span class="ico">📊</span> Estado de la app</div>
+      <div class="info-row"><span class="lbl">Versión</span><span class="val">2.0 Local</span></div>
+      <div class="info-row"><span class="lbl">Residentes locales</span><span class="val" id="adm-stat-users">—</span></div>
+      <div class="info-row"><span class="lbl">Noticias activas</span><span class="val" id="adm-stat-news">—</span></div>
+      <div class="info-row"><span class="lbl">Solicitudes enviadas</span><span class="val" id="adm-stat-req">—</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ico">⚠️</span> Zona de mantenimiento</div>
+      <p style="font-size:13px;color:var(--c-text-muted);margin-bottom:14px">
+        Estas acciones afectan únicamente los datos guardados en este dispositivo.
+      </p>
+      <button class="btn btn-secondary" onclick="exportBackup()">📤 Exportar copia de seguridad</button>
+      <div style="height:8px"></div>
+      <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">📥 Importar copia</button>
+      <input type="file" id="import-file" accept=".json" style="display:none" onchange="importBackup(event)">
+      <div style="height:8px"></div>
+      <button class="btn btn-danger" onclick="confirmWipe()">🗑️ Borrar todos los datos</button>
+    </div>
+
+    <div style="height:8px"></div>
+    <button class="btn btn-secondary" onclick="showScreen('home')">Volver</button>
+  </div>
+</section>
+
+</main>
+
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="nav-btn active" data-nav="home" onclick="showScreen('home')">
+    <div class="ni">🏠</div><div class="nl">Inicio</div>
+  </button>
+  <button class="nav-btn" data-nav="carnet" onclick="showScreen('carnet')">
+    <div class="ni">🪪</div><div class="nl">Carnet</div>
+  </button>
+  <button class="nav-btn" data-nav="solicitudes" onclick="showScreen('solicitudes')">
+    <div class="ni">📋</div><div class="nl">Trámites</div>
+  </button>
+  <button class="nav-btn" data-nav="noticias" onclick="showScreen('noticias')">
+    <div class="ni">📰</div><div class="nl">Noticias</div>
+  </button>
+  <button class="nav-btn" data-nav="info" onclick="showScreen('info')">
+    <div class="ni">ℹ️</div><div class="nl">Info</div>
+  </button>
+</nav>
+
+<div id="toast"></div>
+
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" id="modal">
+    <div class="modal-title">
+      <span id="modal-icon">📋</span>
+      <span id="modal-title">Solicitud</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const K = { USER:'emn_user', CONFIG:'emn_config', NEWS:'emn_news', HIST:'emn_hist' };
+
+const store = {
+  get: (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+  set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
+  rm: (k) => localStorage.removeItem(k),
+};
+
+const DEFAULTS = {
+  nombre: 'Conjunto El Mañana',
+  subtitulo: 'Hogares de Soacha',
+  direccion: 'Soacha, Cundinamarca',
+  hero_img: '',
+  whats: '',
+  email: '',
+  porteria: '',
+  emergencia: '123',
+  hor_admin: 'Lun–Vie 8:00 a.m. – 5:00 p.m. / Sáb 9:00 a.m. – 12:00 m.',
+  hor_salon: '10:00 a.m. – 11:00 p.m. (con reserva previa)',
+  hor_zonas: '6:00 a.m. – 10:00 p.m.',
+  hor_basura: 'Martes, jueves y sábado a partir de las 6:00 p.m.',
+  descripcion: 'Conjunto residencial ubicado en el municipio de Soacha, Cundinamarca. Forma parte del proyecto Hogares de Soacha. Cuenta con zonas comunes, salón social, parqueaderos y portería con vigilancia permanente.\n\nPersonaliza este texto desde el panel de administración.',
+  reglamento: '1. Cumplir los horarios de zonas comunes.\n2. Respetar a los vecinos y empleados del conjunto.\n3. Controlar el volumen de música y eventos, especialmente después de las 10:00 p.m.\n4. Asear los espacios comunes después de usarlos.\n5. Reportar cualquier daño en portería o a la administración.\n6. Las mascotas deben salir siempre con correa y sus dueños son responsables del aseo.\n7. No se permite arrojar basuras fuera de los horarios y sitios designados.\n\nEste reglamento puede ser actualizado desde el panel de administración.',
+  pwd: 'admin2026',
+};
+
+const DEFAULT_NEWS = [{
+  id: '1', tag: 'Bienvenida',
+  title: '¡Bienvenido a la app oficial del conjunto!',
+  img: '',
+  body: 'Esta es la app oficial del Conjunto El Mañana. Aquí podrás consultar tu carnet digital, realizar trámites como reserva de salón, paz y salvo y estado de cuenta, así como estar al tanto de las noticias y comunicados de la administración.\n\nEl administrador publicará las novedades del conjunto en esta sección.',
+  date: Date.now(),
+}];
+
+let state = {
+  user: null, config: null, news: [], hist: [],
+  adminOk: false, currentSolicitud: null,
+  hdrTapCount: 0, hdrTapTimer: null,
+};
+
+function loadState() {
+  state.user = store.get(K.USER, null);
+  state.config = Object.assign({}, DEFAULTS, store.get(K.CONFIG, {}));
+  state.news = store.get(K.NEWS, DEFAULT_NEWS);
+  state.hist = store.get(K.HIST, []);
+}
+
+function $(id) { return document.getElementById(id); }
+function $$(sel) { return document.querySelectorAll(sel); }
+
+function toast(msg, type) {
+  const t = $('toast');
+  t.className = '';
+  t.textContent = msg;
+  if (type) t.classList.add(type);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function showScreen(id) {
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  const target = $('screen-' + id);
+  if (target) target.classList.add('active');
+  $$('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.nav === id));
+  window.scrollTo(0, 0);
+  const hasUser = !!state.user;
+  const showNav = hasUser && id !== 'register';
+  $('bottom-nav').style.display = showNav ? 'flex' : 'none';
+  $('app-header').style.display = (id === 'register' && !hasUser) ? 'none' : 'flex';
+  if (id === 'carnet') renderCarnet();
+  if (id === 'home') renderHome();
+  if (id === 'noticias') renderNews();
+  if (id === 'info') renderInfo();
+  if (id === 'solicitudes') renderHist();
+  if (id === 'admin') renderAdmin();
+}
+
+function initials(name) {
+  if (!name) return '·';
+  const parts = name.trim().split(/\s+/).slice(0, 2);
+  return parts.map(p => p[0]).join('').toUpperCase();
+}
+
+function fmtDate(ts) { return new Date(ts).toLocaleDateString('es-CO', {year:'numeric',month:'long',day:'numeric'}); }
+function fmtDateShort(ts) { return new Date(ts).toLocaleDateString('es-CO', {day:'2-digit',month:'short',year:'numeric'}); }
+function fmtDateTime(ts) { return new Date(ts).toLocaleString('es-CO', {dateStyle:'medium',timeStyle:'short'}); }
+
+function escapeHtml(s) {
+  return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+
+function doRegister() {
+  const nombre = $('reg-nombre').value.trim();
+  const tipoDoc = $('reg-tipo-doc').value;
+  const doc = $('reg-doc').value.trim();
+  const torre = $('reg-torre').value.trim();
+  const apto = $('reg-apto').value.trim();
+  const rol = $('reg-rol').value;
+  const tel = $('reg-tel').value.trim();
+  const email = $('reg-email').value.trim();
+  const placas = $('reg-placas').value.trim();
+  if (!nombre || !doc || !torre || !apto || !tel) { toast('Completa los campos obligatorios', 'error'); return; }
+  state.user = { nombre, tipoDoc, doc, torre, apto, rol, tel, email, placas, registrado: Date.now() };
+  store.set(K.USER, state.user);
+  toast('¡Registro exitoso!', 'success');
+  showScreen('home');
+}
+
+function confirmLogout() {
+  if (!confirm('¿Seguro que deseas cerrar sesión? Se borrarán tus datos de este dispositivo.')) return;
+  store.rm(K.USER);
+  state.user = null;
+  state.adminOk = false;
+  toast('Sesión cerrada');
+  showScreen('register');
+}
+
+function renderCarnet() {
+  if (!state.user) return;
+  const u = state.user;
+  $('carnet-conjunto-t1').textContent = state.config.nombre;
+  $('carnet-avatar').textContent = initials(u.nombre);
+  $('carnet-nombre').textContent = u.nombre;
+  $('carnet-rol').textContent = u.rol;
+  $('carnet-doc').textContent = u.tipoDoc + ' ' + u.doc;
+  $('carnet-ubic').textContent = 'Torre ' + u.torre + ' · Apto ' + u.apto;
+  $('carnet-placas').textContent = u.placas || '—';
+  $('carnet-tel').textContent = u.tel || '—';
+  $('carnet-email').textContent = u.email || '—';
+  $('carnet-fecha').textContent = fmtDate(u.registrado);
+  $('carnet-emitido').textContent = fmtDate(Date.now());
+}
+
+async function exportarCarnet() {
+  const u = state.user;
+  const texto =
+`🏢 *${state.config.nombre.toUpperCase()}*
+Carnet digital de residente
+
+👤 ${u.nombre}
+🪪 ${u.tipoDoc} ${u.doc}
+🏠 Torre ${u.torre} · Apto ${u.apto}
+📋 ${u.rol}
+📱 ${u.tel}
+🚗 Placas: ${u.placas || 'N/A'}
+
+Emitido: ${fmtDate(Date.now())}`;
+  if (navigator.share) {
+    try { await navigator.share({ title: 'Mi carnet — ' + state.config.nombre, text: texto }); return; } catch (e) {}
+  }
+  try { await navigator.clipboard.writeText(texto); toast('Carnet copiado al portapapeles', 'success'); }
+  catch { alert(texto); }
+}
+
+function renderHome() {
+  if (!state.user) return;
+  const u = state.user;
+  $('hero-name').textContent = state.config.nombre;
+  $('hero-sub').textContent = state.config.subtitulo || state.config.direccion;
+  const heroImg = $('hero-img');
+  if (state.config.hero_img) {
+    heroImg.style.backgroundImage = `url("${state.config.hero_img}")`;
+  } else {
+    const svg = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 360' preserveAspectRatio='xMidYMid slice'><defs><linearGradient id='sky' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%231F3A68'/><stop offset='100%25' stop-color='%232B4F89'/></linearGradient></defs><rect width='600' height='360' fill='url(%23sky)'/><circle cx='480' cy='70' r='35' fill='%23C9A961' opacity='0.85'/><g fill='%23152847'><rect x='50' y='150' width='90' height='200'/><rect x='160' y='110' width='110' height='240'/><rect x='290' y='80' width='130' height='270'/><rect x='440' y='140' width='100' height='210'/></g><g fill='%23C9A961' opacity='0.6'><rect x='60' y='170' width='12' height='14'/><rect x='82' y='170' width='12' height='14'/><rect x='104' y='170' width='12' height='14'/><rect x='120' y='170' width='12' height='14'/><rect x='60' y='200' width='12' height='14'/><rect x='82' y='200' width='12' height='14'/><rect x='104' y='200' width='12' height='14'/><rect x='120' y='200' width='12' height='14'/><rect x='60' y='230' width='12' height='14'/><rect x='82' y='230' width='12' height='14'/><rect x='104' y='230' width='12' height='14'/><rect x='120' y='230' width='12' height='14'/><rect x='170' y='130' width='14' height='16'/><rect x='196' y='130' width='14' height='16'/><rect x='222' y='130' width='14' height='16'/><rect x='248' y='130' width='14' height='16'/><rect x='170' y='165' width='14' height='16'/><rect x='196' y='165' width='14' height='16'/><rect x='222' y='165' width='14' height='16'/><rect x='248' y='165' width='14' height='16'/><rect x='170' y='200' width='14' height='16'/><rect x='196' y='200' width='14' height='16'/><rect x='222' y='200' width='14' height='16'/><rect x='248' y='200' width='14' height='16'/><rect x='300' y='100' width='16' height='18'/><rect x='328' y='100' width='16' height='18'/><rect x='360' y='100' width='16' height='18'/><rect x='392' y='100' width='16' height='18'/><rect x='300' y='140' width='16' height='18'/><rect x='328' y='140' width='16' height='18'/><rect x='360' y='140' width='16' height='18'/><rect x='392' y='140' width='16' height='18'/><rect x='300' y='180' width='16' height='18'/><rect x='328' y='180' width='16' height='18'/><rect x='360' y='180' width='16' height='18'/><rect x='392' y='180' width='16' height='18'/><rect x='300' y='220' width='16' height='18'/><rect x='328' y='220' width='16' height='18'/><rect x='360' y='220' width='16' height='18'/><rect x='392' y='220' width='16' height='18'/><rect x='452' y='160' width='14' height='16'/><rect x='478' y='160' width='14' height='16'/><rect x='504' y='160' width='14' height='16'/><rect x='452' y='195' width='14' height='16'/><rect x='478' y='195' width='14' height='16'/><rect x='504' y='195' width='14' height='16'/><rect x='452' y='230' width='14' height='16'/><rect x='478' y='230' width='14' height='16'/><rect x='504' y='230' width='14' height='16'/></g><rect y='340' width='600' height='20' fill='%230F1E3A'/></svg>";
+    heroImg.style.backgroundImage = 'url("data:image/svg+xml;utf8,' + svg + '")';
+  }
+  $('wel-avatar').textContent = initials(u.nombre);
+  $('wel-name').textContent = u.nombre.split(' ')[0];
+
+  const list = $('home-news-list');
+  const recent = [...state.news].sort((a, b) => b.date - a.date).slice(0, 2);
+  if (recent.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="emj">📰</div><div class="s">Aún no hay noticias</div></div>';
+  } else {
+    list.innerHTML = recent.map(renderNewsCard).join('');
+  }
+}
+
+function renderNewsCard(n) {
+  const img = n.img ? `<div class="news-img" style="background-image:url('${escapeHtml(n.img)}')"></div>` : '';
+  const tag = n.tag ? `<span class="news-tag">${escapeHtml(n.tag)}</span>` : '';
+  return `<div class="news-item">${img}<div class="news-body">${tag}<div class="news-date">${fmtDateShort(n.date)}</div><div class="news-title">${escapeHtml(n.title)}</div><div class="news-body-text">${escapeHtml(n.body).replace(/\n/g, '<br>')}</div></div></div>`;
+}
+
+function renderNews() {
+  const list = $('news-list');
+  const all = [...state.news].sort((a, b) => b.date - a.date);
+  if (all.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="emj">📰</div><div class="t">Sin noticias</div><div class="s">La administración aún no ha publicado novedades.</div></div>';
+  } else {
+    list.innerHTML = all.map(renderNewsCard).join('');
+  }
+}
+
+function renderInfo() {
+  const c = state.config;
+  $('info-descripcion').innerHTML = escapeHtml(c.descripcion).replace(/\n/g, '<br>');
+  $('info-admin-whats').textContent = c.whats ? 'Chatear por WhatsApp' : 'No configurado';
+  $('info-admin-email').textContent = c.email || 'No configurado';
+  $('info-porteria').textContent = c.porteria ? c.porteria : 'No configurado';
+  $('info-emergencia').textContent = c.emergencia || 'No configurado';
+  $('horario-admin').textContent = c.hor_admin || '—';
+  $('horario-salon').textContent = c.hor_salon || '—';
+  $('horario-zonas').textContent = c.hor_zonas || '—';
+  $('horario-basura').textContent = c.hor_basura || '—';
+  $('info-reglamento').textContent = c.reglamento || '—';
+}
+
+function contactarAdmin() {
+  const w = state.config.whats;
+  if (!w) { toast('El administrador no ha configurado su WhatsApp', 'error'); return; }
+  const msg = encodeURIComponent(`Hola, soy residente del ${state.config.nombre}. Quisiera realizar una consulta.`);
+  window.open(`https://wa.me/${w}?text=${msg}`, '_blank');
+}
+function contactarAdminCorreo() {
+  const e = state.config.email;
+  if (!e) { toast('Correo no configurado', 'error'); return; }
+  window.open(`mailto:${e}?subject=${encodeURIComponent('Consulta residente — ' + state.config.nombre)}`, '_blank');
+}
+function llamarPorteria() {
+  const t = state.config.porteria;
+  if (!t) { toast('Portería no configurada', 'error'); return; }
+  window.open(`tel:${t}`, '_self');
+}
+function llamarEmergencia() {
+  const t = state.config.emergencia;
+  if (!t) { toast('Emergencia no configurada', 'error'); return; }
+  window.open(`tel:${t}`, '_self');
+}
+
+const SOLICITUDES = {
+  'reserva-salon': {
+    icon: '🎉', title: 'Reserva de salón social',
+    intro: 'Completa los datos para solicitar la reserva. El administrador confirmará la disponibilidad.',
+    fields: [
+      { id: 'fecha', label: 'Fecha del evento', type: 'date', required: true },
+      { id: 'horaInicio', label: 'Hora inicio', type: 'time', required: true, col: 1 },
+      { id: 'horaFin', label: 'Hora fin', type: 'time', required: true, col: 2 },
+      { id: 'asistentes', label: 'Número de asistentes', type: 'number', required: true, min: 1 },
+      { id: 'tipoEvento', label: 'Tipo de evento', type: 'select', required: true,
+        options: ['Cumpleaños','Reunión familiar','Baby shower','Primera comunión / Grado','Reunión social','Otro'] },
+      { id: 'obs', label: 'Observaciones', type: 'textarea', placeholder: '¿Habrá música? ¿Servicio externo? Detalles adicionales…' },
+      { id: 'acepto', label: 'Acepto el reglamento del salón social y asumo los daños que ocurran durante mi evento', type: 'checkbox', required: true },
+    ],
+    buildMsg: (d, u, c) =>
+`*SOLICITUD DE RESERVA — SALÓN SOCIAL*
+${c.nombre}
+
+👤 *Residente:* ${u.nombre}
+🪪 ${u.tipoDoc} ${u.doc}
+🏠 Torre ${u.torre} · Apto ${u.apto}
+📱 ${u.tel}
+
+📅 *Fecha:* ${d.fecha}
+🕒 *Horario:* ${d.horaInicio} a ${d.horaFin}
+👥 *Asistentes:* ${d.asistentes}
+🎊 *Tipo:* ${d.tipoEvento}
+
+📝 *Observaciones:*
+${d.obs || '—'}
+
+✅ Reglamento aceptado.
+
+_Enviado desde la App del Conjunto_`,
+  },
+  'estado-cuenta': {
+    icon: '💳', title: 'Estado de cuenta',
+    intro: 'Solicita el detalle de tu estado de cuenta de administración.',
+    fields: [
+      { id: 'periodo', label: 'Período a consultar', type: 'text', placeholder: 'Ej. Marzo 2026', required: true },
+      { id: 'formato', label: 'Formato de entrega', type: 'select', options: ['WhatsApp','Correo electrónico','Impreso en administración'], required: true },
+      { id: 'motivo', label: 'Motivo (opcional)', type: 'textarea', placeholder: 'Detalle específico, si aplica…' },
+    ],
+    buildMsg: (d, u, c) =>
+`*SOLICITUD DE ESTADO DE CUENTA*
+${c.nombre}
+
+👤 *Residente:* ${u.nombre}
+🪪 ${u.tipoDoc} ${u.doc}
+🏠 Torre ${u.torre} · Apto ${u.apto}
+📱 ${u.tel}
+📧 ${u.email || 'Sin correo'}
+
+📆 *Período:* ${d.periodo}
+📬 *Formato:* ${d.formato}
+
+📝 *Observaciones:*
+${d.motivo || '—'}
+
+_Enviado desde la App del Conjunto_`,
+  },
+  'paz-y-salvo': {
+    icon: '📄', title: 'Paz y salvo',
+    intro: 'Certificado de que estás al día con la administración.',
+    fields: [
+      { id: 'motivo', label: 'Motivo', type: 'select', required: true,
+        options: ['Venta del inmueble','Refinanciación','Trámite notarial','Cambio de propietario','Traslado','Otro'] },
+      { id: 'fechaNec', label: 'Fecha en que lo necesitas', type: 'date' },
+      { id: 'dirigido', label: 'Dirigido a (opcional)', type: 'text', placeholder: 'Ej. Banco X, Notaría Y…' },
+      { id: 'obs', label: 'Observaciones', type: 'textarea' },
+    ],
+    buildMsg: (d, u, c) =>
+`*SOLICITUD DE PAZ Y SALVO*
+${c.nombre}
+
+👤 *Residente:* ${u.nombre}
+🪪 ${u.tipoDoc} ${u.doc}
+🏠 Torre ${u.torre} · Apto ${u.apto}
+📱 ${u.tel}
+
+🎯 *Motivo:* ${d.motivo}
+📅 *Fecha requerida:* ${d.fechaNec || 'Lo antes posible'}
+📬 *Dirigido a:* ${d.dirigido || '—'}
+
+📝 *Observaciones:*
+${d.obs || '—'}
+
+_Enviado desde la App del Conjunto_`,
+  },
+  'certificado-residencia': {
+    icon: '🏠', title: 'Certificado de residencia',
+    intro: 'Constancia de que resides en el conjunto.',
+    fields: [
+      { id: 'dirigido', label: 'Dirigido a', type: 'text', placeholder: 'Ej. Colegio, empresa, entidad…', required: true },
+      { id: 'motivo', label: 'Motivo', type: 'textarea', required: true },
+      { id: 'fechaNec', label: 'Fecha en que lo necesitas', type: 'date' },
+    ],
+    buildMsg: (d, u, c) =>
+`*SOLICITUD DE CERTIFICADO DE RESIDENCIA*
+${c.nombre}
+
+👤 *Residente:* ${u.nombre}
+🪪 ${u.tipoDoc} ${u.doc}
+🏠 Torre ${u.torre} · Apto ${u.apto}
+📋 Calidad: ${u.rol}
+📱 ${u.tel}
+
+📬 *Dirigido a:* ${d.dirigido}
+📅 *Fecha requerida:* ${d.fechaNec || 'Lo antes posible'}
+
+📝 *Motivo:*
+${d.motivo}
+
+_Enviado desde la App del Conjunto_`,
+  },
+  'autorizacion-ingreso': {
+    icon: '🚪', title: 'Autorización de ingreso',
+    intro: 'Registra visitas, mudanzas o servicios para agilizar el ingreso en portería.',
+    fields: [
+      { id: 'tipo', label: 'Tipo de ingreso', type: 'select', required: true,
+        options: ['Visita (familiar/amigo)','Mudanza','Domicilio / encomienda','Servicio técnico','Trabajador por horas','Otro'] },
+      { id: 'nombreVisita', label: 'Nombre del visitante o empresa', type: 'text', required: true },
+      { id: 'docVisita', label: 'Documento / placa (si aplica)', type: 'text' },
+      { id: 'fechaHora', label: 'Fecha y hora prevista', type: 'datetime-local', required: true },
+      { id: 'obs', label: 'Observaciones', type: 'textarea' },
+    ],
+    buildMsg: (d, u, c) =>
+`*AUTORIZACIÓN DE INGRESO*
+${c.nombre}
+
+👤 *Residente:* ${u.nombre}
+🏠 Torre ${u.torre} · Apto ${u.apto}
+📱 ${u.tel}
+
+🚪 *Tipo:* ${d.tipo}
+👥 *Visitante / Empresa:* ${d.nombreVisita}
+🪪 *Doc/Placa:* ${d.docVisita || '—'}
+📅 *Fecha/hora:* ${d.fechaHora}
+
+📝 *Observaciones:*
+${d.obs || '—'}
+
+_Autorizo el ingreso. Enviado desde la App del Conjunto._`,
+  },
+  'mantenimiento': {
+    icon: '🔧', title: 'Reporte de mantenimiento',
+    intro: 'Reporta daños o fallas en zonas comunes.',
+    fields: [
+      { id: 'area', label: 'Área afectada', type: 'select', required: true,
+        options: ['Portería','Ascensor','Salón social','Piscina','Parqueaderos','Pasillos / escaleras','Zonas verdes','Iluminación','Otra'] },
+      { id: 'ubicacion', label: 'Ubicación específica', type: 'text', placeholder: 'Ej. Torre 3, piso 2', required: true },
+      { id: 'descripcion', label: 'Descripción del daño', type: 'textarea', required: true },
+      { id: 'urgencia', label: 'Urgencia', type: 'select', options: ['Baja','Media','Alta (afecta seguridad o servicios)'] },
+    ],
+    buildMsg: (d, u, c) =>
+`*REPORTE DE MANTENIMIENTO*
+${c.nombre}
+
+👤 *Reporta:* ${u.nombre} (Torre ${u.torre} · Apto ${u.apto})
+📱 ${u.tel}
+
+🔧 *Área:* ${d.area}
+📍 *Ubicación:* ${d.ubicacion}
+⚠️ *Urgencia:* ${d.urgencia || 'Media'}
+
+📝 *Descripción:*
+${d.descripcion}
+
+_Enviado desde la App del Conjunto_`,
+  },
+  'pqrs': {
+    icon: '💬', title: 'PQRS',
+    intro: 'Peticiones, quejas, reclamos y sugerencias.',
+    fields: [
+      { id: 'tipo', label: 'Tipo', type: 'select', required: true,
+        options: ['Petición','Queja','Reclamo','Sugerencia','Felicitación'] },
+      { id: 'asunto', label: 'Asunto', type: 'text', required: true },
+      { id: 'descripcion', label: 'Descripción detallada', type: 'textarea', required: true, minLen: 10 },
+      { id: 'anonimo', label: 'Enviar de forma anónima (solo vía correo)', type: 'checkbox' },
+    ],
+    buildMsg: (d, u, c) => {
+      const who = d.anonimo ? '🙈 *Residente:* Anónimo' : `👤 *Residente:* ${u.nombre}\n🏠 Torre ${u.torre} · Apto ${u.apto}\n📱 ${u.tel}`;
+      return `*PQRS — ${d.tipo.toUpperCase()}*
+${c.nombre}
+
+${who}
+
+📋 *Asunto:* ${d.asunto}
+
+📝 *Descripción:*
+${d.descripcion}
+
+_Enviado desde la App del Conjunto_`;
+    },
+  },
+  'otro': {
+    icon: '📌', title: 'Otro trámite',
+    intro: 'Cualquier otra solicitud administrativa.',
+    fields: [
+      { id: 'asunto', label: 'Asunto', type: 'text', required: true },
+      { id: 'descripcion', label: 'Descripción detallada', type: 'textarea', required: true },
+    ],
+    buildMsg: (d, u, c) =>
+`*OTRO TRÁMITE*
+${c.nombre}
+
+👤 *Residente:* ${u.nombre}
+🏠 Torre ${u.torre} · Apto ${u.apto}
+📱 ${u.tel}
+
+📋 *Asunto:* ${d.asunto}
+
+📝 *Descripción:*
+${d.descripcion}
+
+_Enviado desde la App del Conjunto_`,
+  },
+};
+
+function openSolicitud(tipo) {
+  if (!state.user) { showScreen('register'); return; }
+  const s = SOLICITUDES[tipo];
+  if (!s) return;
+  state.currentSolicitud = { tipo, def: s };
+
+  $('modal-icon').textContent = s.icon;
+  $('modal-title').textContent = s.title;
+
+  let html = `<p style="font-size:13px;color:var(--c-text-muted);margin-bottom:12px">${s.intro}</p>`;
+  let col1 = '';
+
+  s.fields.forEach(f => {
+    const fld = renderField(f);
+    if (f.col === 1) { col1 = fld; }
+    else if (f.col === 2) {
+      html += `<div class="row-2"><div>${col1}</div><div>${fld}</div></div>`;
+      col1 = '';
+    } else { html += fld; }
+  });
+
+  html += `
+    <div style="margin-top:18px">
+      <button class="btn btn-primary" onclick="enviarSolicitud('whatsapp')">📱 Enviar por WhatsApp</button>
+      <div style="height:8px"></div>
+      <button class="btn btn-secondary" onclick="enviarSolicitud('email')">📧 Enviar por correo</button>
+      <div style="height:8px"></div>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+    </div>`;
+
+  $('modal-body').innerHTML = html;
+  $('modal-backdrop').classList.add('show');
+}
+
+function renderField(f) {
+  const req = f.required ? '<span class="req">*</span>' : '';
+  const lbl = f.type === 'checkbox' ? '' : `<label class="field-label">${f.label} ${req}</label>`;
+  let input = '';
+  if (f.type === 'textarea') {
+    input = `<textarea id="s-${f.id}" placeholder="${escapeHtml(f.placeholder || '')}" rows="3"></textarea>`;
+  } else if (f.type === 'select') {
+    input = `<select id="s-${f.id}">` + (f.options || []).map(o => `<option value="${escapeHtml(o)}">${escapeHtml(o)}</option>`).join('') + `</select>`;
+  } else if (f.type === 'checkbox') {
+    return `<label style="display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:13px;line-height:1.5">
+      <input type="checkbox" id="s-${f.id}" style="width:auto;margin-top:3px">
+      <span>${f.label} ${req}</span></label>`;
+  } else {
+    const attrs = [];
+    if (f.type === 'number' && f.min) attrs.push(`min="${f.min}"`);
+    if (f.placeholder) attrs.push(`placeholder="${escapeHtml(f.placeholder)}"`);
+    input = `<input id="s-${f.id}" type="${f.type}" ${attrs.join(' ')}>`;
+  }
+  return lbl + input;
+}
+
+function collectSolicitud() {
+  const s = state.currentSolicitud.def;
+  const data = {};
+  for (const f of s.fields) {
+    const el = $('s-' + f.id);
+    if (!el) continue;
+    const val = f.type === 'checkbox' ? el.checked : el.value.trim();
+    if (f.required) {
+      if (f.type === 'checkbox' && !val) { toast('Debes aceptar: ' + f.label, 'error'); return null; }
+      if (f.type !== 'checkbox' && !val) { toast('Falta: ' + f.label, 'error'); return null; }
+    }
+    if (f.minLen && String(val).length < f.minLen) { toast(`${f.label} debe tener al menos ${f.minLen} caracteres`, 'error'); return null; }
+    data[f.id] = val;
+  }
+  return data;
+}
+
+function enviarSolicitud(canal) {
+  const data = collectSolicitud();
+  if (!data) return;
+  const s = state.currentSolicitud.def;
+  const tipo = state.currentSolicitud.tipo;
+  const msg = s.buildMsg(data, state.user, state.config);
+
+  state.hist.unshift({
+    id: Date.now().toString(), tipo, title: s.title, canal, data,
+    snippet: (data.descripcion || data.obs || data.asunto || data.motivo || '').slice(0, 120),
+    date: Date.now(),
+  });
+  if (state.hist.length > 50) state.hist.pop();
+  store.set(K.HIST, state.hist);
+
+  if (canal === 'whatsapp') {
+    const w = state.config.whats;
+    if (!w) { toast('Admin no ha configurado WhatsApp', 'error'); return; }
+    window.open(`https://wa.me/${w}?text=${encodeURIComponent(msg)}`, '_blank');
+  } else {
+    const e = state.config.email;
+    if (!e) { toast('Admin no ha configurado correo', 'error'); return; }
+    const subj = `[${state.config.nombre}] ${s.title} — Torre ${state.user.torre}·Apto ${state.user.apto}`;
+    window.open(`mailto:${e}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  closeModal();
+  toast('Solicitud preparada. Envía el mensaje.', 'success');
+  showScreen('solicitudes');
+}
+
+function closeModal() {
+  $('modal-backdrop').classList.remove('show');
+  state.currentSolicitud = null;
+}
+
+function renderHist() {
+  const list = $('hist-list');
+  if (!state.hist.length) {
+    list.innerHTML = '<div class="empty"><div class="emj">📋</div><div class="t">Sin solicitudes</div><div class="s">Aquí verás las solicitudes que hayas enviado.</div></div>';
+    return;
+  }
+  list.innerHTML = state.hist.map(h => `
+    <div class="hist-item">
+      <div class="hist-type">${escapeHtml(h.title || h.tipo)} · por ${h.canal === 'whatsapp' ? 'WhatsApp' : 'Correo'}</div>
+      <div class="hist-date">${fmtDateTime(h.date)}</div>
+      ${h.snippet ? `<div class="hist-body">${escapeHtml(h.snippet)}…</div>` : ''}
+    </div>`).join('');
+}
+
+function pedirAdmin() {
+  const p = prompt('Contraseña de administrador:');
+  if (p === null) return;
+  if (p === state.config.pwd) {
+    state.adminOk = true;
+    showScreen('admin');
+  } else {
+    toast('Contraseña incorrecta', 'error');
+  }
+}
+
+function renderAdmin() {
+  if (!state.adminOk) { showScreen('info'); return; }
+  const c = state.config;
+  $('adm-nombre').value = c.nombre || '';
+  $('adm-subtitulo').value = c.subtitulo || '';
+  $('adm-direccion').value = c.direccion || '';
+  $('adm-hero-img').value = c.hero_img || '';
+  $('adm-whats').value = c.whats || '';
+  $('adm-email').value = c.email || '';
+  $('adm-porteria').value = c.porteria || '';
+  $('adm-emergencia').value = c.emergencia || '';
+  $('adm-hor-admin').value = c.hor_admin || '';
+  $('adm-hor-salon').value = c.hor_salon || '';
+  $('adm-hor-zonas').value = c.hor_zonas || '';
+  $('adm-hor-basura').value = c.hor_basura || '';
+  $('adm-descripcion').value = c.descripcion || '';
+  $('adm-reglamento').value = c.reglamento || '';
+  $('adm-pwd').value = c.pwd || '';
+  renderAdminNewsList();
+  $('adm-stat-users').textContent = state.user ? '1 (este dispositivo)' : '0';
+  $('adm-stat-news').textContent = state.news.length;
+  $('adm-stat-req').textContent = state.hist.length;
+}
+
+function saveAdminConfig() {
+  const c = {
+    nombre: $('adm-nombre').value.trim() || DEFAULTS.nombre,
+    subtitulo: $('adm-subtitulo').value.trim(),
+    direccion: $('adm-direccion').value.trim(),
+    hero_img: $('adm-hero-img').value.trim(),
+    whats: $('adm-whats').value.replace(/\D/g, ''),
+    email: $('adm-email').value.trim(),
+    porteria: $('adm-porteria').value.trim(),
+    emergencia: $('adm-emergencia').value.trim(),
+    hor_admin: $('adm-hor-admin').value.trim(),
+    hor_salon: $('adm-hor-salon').value.trim(),
+    hor_zonas: $('adm-hor-zonas').value.trim(),
+    hor_basura: $('adm-hor-basura').value.trim(),
+    descripcion: $('adm-descripcion').value.trim(),
+    reglamento: $('adm-reglamento').value.trim(),
+    pwd: $('adm-pwd').value.trim() || DEFAULTS.pwd,
+  };
+  state.config = Object.assign({}, DEFAULTS, c);
+  store.set(K.CONFIG, state.config);
+  $('hdr-title').textContent = state.config.nombre;
+  $('hdr-subtitle').textContent = state.config.subtitulo || '';
+  toast('Configuración guardada', 'success');
+}
+
+function saveNews() {
+  const title = $('news-title').value.trim();
+  const body = $('news-body').value.trim();
+  const img = $('news-img').value.trim();
+  const tag = $('news-tag').value;
+  if (!title || !body) { toast('Título y contenido son obligatorios', 'error'); return; }
+  state.news.unshift({ id: Date.now().toString(), title, body, img, tag, date: Date.now() });
+  store.set(K.NEWS, state.news);
+  $('news-title').value = ''; $('news-body').value = ''; $('news-img').value = ''; $('news-tag').value = '';
+  toast('Noticia publicada', 'success');
+  renderAdminNewsList();
+}
+
+function renderAdminNewsList() {
+  const list = $('admin-news-list');
+  if (!state.news.length) {
+    list.innerHTML = '<div class="empty"><div class="s">Aún no hay noticias publicadas</div></div>';
+    return;
+  }
+  list.innerHTML = [...state.news].sort((a,b)=>b.date-a.date).map(n => `
+    <div class="hist-item" style="border-left-color:var(--c-gold)">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+        <div style="flex:1;min-width:0">
+          <div class="hist-type">${escapeHtml(n.tag || 'Noticia')}</div>
+          <div class="hist-subject">${escapeHtml(n.title)}</div>
+          <div class="hist-date">${fmtDateShort(n.date)}</div>
+        </div>
+        <button class="btn btn-sm btn-danger" style="width:auto;padding:6px 10px" onclick="deleteNews('${n.id}')">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function deleteNews(id) {
+  if (!confirm('¿Eliminar esta noticia?')) return;
+  state.news = state.news.filter(n => n.id !== id);
+  store.set(K.NEWS, state.news);
+  renderAdminNewsList();
+  toast('Noticia eliminada');
+}
+
+function exportBackup() {
+  const data = { user: state.user, config: state.config, news: state.news, hist: state.hist, v: '2.0', exported: Date.now() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `elmanana-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Copia exportada', 'success');
+}
+
+function importBackup(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function() {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!confirm('¿Restaurar esta copia? Se reemplazarán los datos actuales.')) return;
+      if (data.user) store.set(K.USER, data.user);
+      if (data.config) store.set(K.CONFIG, data.config);
+      if (data.news) store.set(K.NEWS, data.news);
+      if (data.hist) store.set(K.HIST, data.hist);
+      loadState();
+      toast('Copia restaurada', 'success');
+      renderAdmin();
+    } catch (err) { toast('Archivo inválido', 'error'); }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+
+function confirmWipe() {
+  if (!confirm('⚠️ Esto borrará TODOS los datos (usuario, config, noticias, historial). ¿Continuar?')) return;
+  if (!confirm('Esta acción NO se puede deshacer. ¿Estás completamente seguro?')) return;
+  Object.values(K).forEach(k => store.rm(k));
+  toast('Datos borrados', 'success');
+  setTimeout(() => location.reload(), 800);
+}
+
+function setupAdminTabs() {
+  $$('#admin-tabs .tab-btn').forEach(btn => {
+    btn.onclick = () => {
+      $$('#admin-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      $$('.admin-tab').forEach(t => t.style.display = t.dataset.tabContent === tab ? 'block' : 'none');
+    };
+  });
+}
+
+function setupHeaderTap() {
+  $('app-header').addEventListener('click', () => {
+    state.hdrTapCount++;
+    clearTimeout(state.hdrTapTimer);
+    state.hdrTapTimer = setTimeout(() => { state.hdrTapCount = 0; }, 1200);
+    if (state.hdrTapCount >= 5) {
+      state.hdrTapCount = 0;
+      pedirAdmin();
+    }
+  });
+}
+
+function init() {
+  loadState();
+  setupAdminTabs();
+  setupHeaderTap();
+  $('hdr-title').textContent = state.config.nombre;
+  $('hdr-subtitle').textContent = state.config.subtitulo || '';
+  if (!state.user) showScreen('register'); else showScreen('home');
+
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    const swCode = `self.addEventListener('install', e => self.skipWaiting());self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));self.addEventListener('fetch', () => {});`;
+    try {
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      const url = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(url).catch(() => {});
+    } catch (e) {}
+  }
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
