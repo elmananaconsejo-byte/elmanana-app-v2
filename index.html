@@ -170,6 +170,9 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
 .tabs{display:flex;gap:4px;margin-bottom:14px;background:var(--c-card);padding:4px;border-radius:10px;box-shadow:var(--shadow-sm);overflow-x:auto}
 .tab-btn{flex:1;padding:8px 10px;border:none;background:none;border-radius:8px;font-size:13px;font-weight:600;color:var(--c-text-muted);cursor:pointer;font-family:inherit;white-space:nowrap}
 .tab-btn.active{background:var(--c-primary);color:white}
+.pay-steps{margin:8px 0 16px;display:flex;flex-direction:column;gap:8px}
+.pay-step{display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.45;color:var(--c-text)}
+.pay-n{flex-shrink:0;width:24px;height:24px;border-radius:50%;background:var(--c-gold);color:var(--c-primary-dark);font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
 
 .register-hero{text-align:center;padding:20px 0 28px}
 .register-hero .logo-big{width:76px;height:76px;margin:0 auto 14px;background:linear-gradient(135deg,var(--c-primary) 0%,var(--c-primary-dark) 100%);border-radius:20px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg)}
@@ -189,6 +192,12 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
 .schedule-grid .sc-day{font-weight:600;color:var(--c-primary)}
 
 .warn-banner{background:#FFFBEB;border:1px solid #FDE68A;border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;color:#92400E;line-height:1.5;margin-bottom:12px}
+.privacy-box{margin-top:18px;padding:14px;background:#F8FAFC;border:1.5px solid #E5E7EB;border-left:3px solid var(--c-primary);border-radius:var(--radius-sm)}
+.privacy-title{font-size:13px;font-weight:700;color:var(--c-primary);margin-bottom:8px}
+.privacy-text{font-size:12px;color:var(--c-text);line-height:1.55;max-height:200px;overflow-y:auto;padding-right:4px}
+.privacy-check{display:flex;gap:10px;align-items:flex-start;margin-top:14px;padding:10px;background:white;border:1px solid var(--c-border);border-radius:var(--radius-sm);font-size:13px;line-height:1.45;cursor:pointer}
+.privacy-check input{width:auto;margin-top:2px;flex-shrink:0}
+.privacy-check span{flex:1}
 .info-banner{background:#EFF6FF;border:1px solid #BFDBFE;border-radius:var(--radius-sm);padding:10px 12px;font-size:12px;color:#1E40AF;line-height:1.5;margin-bottom:12px}
 
 .consecutivo-badge{display:inline-block;background:var(--c-primary);color:white;padding:3px 10px;border-radius:20px;font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:1px}
@@ -264,6 +273,23 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
     <div id="reg-vehiculos"></div>
     <button type="button" class="btn btn-ghost btn-sm" id="reg-add-vehiculo" style="margin-top:8px;width:auto">+ Agregar vehículo</button>
 
+    <div class="privacy-box">
+      <div class="privacy-title">📜 Aviso de tratamiento de datos personales</div>
+      <div class="privacy-text">
+        En cumplimiento de la <b>Ley 1581 de 2012</b> y el <b>Decreto 1377 de 2013</b> sobre protección de datos personales en Colombia, el <b id="privacy-nombre">Conjunto El Mañana</b> te informa que:
+        <br><br>
+        <b>1. Responsable del tratamiento:</b> Administración del conjunto residencial.<br>
+        <b>2. Finalidad:</b> tus datos personales (nombre, documento, dirección dentro del conjunto, contacto, placas de vehículos) se usan <u>únicamente</u> para: generar tu carnet digital, identificarte en portería, tramitar tus solicitudes administrativas y enviarte comunicados oficiales.<br>
+        <b>3. Almacenamiento:</b> la información queda guardada localmente en tu dispositivo. Solo se transmite cuando tú generas una solicitud o envías un comprobante, y exclusivamente a los correos oficiales del conjunto.<br>
+        <b>4. Derechos:</b> puedes conocer, actualizar, rectificar o solicitar la supresión de tus datos en cualquier momento, escribiendo a la administración o usando la opción <i>"Cerrar sesión y borrar datos"</i> dentro de la app.<br>
+        <b>5. Seguridad:</b> no compartimos tus datos con terceros diferentes a los órganos de administración (administrador, consejo, contador) del conjunto.
+      </div>
+      <label class="privacy-check">
+        <input type="checkbox" id="reg-autoriza">
+        <span>Declaro que leí y <b>autorizo</b> el tratamiento de mis datos personales para los fines descritos. <span class="req">*</span></span>
+      </label>
+    </div>
+
     <div style="margin-top: 18px">
       <button class="btn btn-primary" onclick="doRegister()">Crear mi cuenta</button>
     </div>
@@ -333,8 +359,8 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
     <button class="service-tile" onclick="showScreen('comprobantes')">
       <div class="service-icon green">💰</div>
       <div class="service-info">
-        <div class="t">Enviar comprobante de pago</div>
-        <div class="s">Administración, parqueadero, multas</div>
+        <div class="t">Pagar administración o enviar comprobante</div>
+        <div class="s">Portal AVAL Pay Center y envío de soportes</div>
       </div>
       <div class="arrow">›</div>
     </button>
@@ -455,76 +481,116 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
 
   <div class="divider"></div>
   <button class="btn btn-ghost" onclick="contactarAdminWhats()" style="font-size:13px">
-    💬 Canal alterno: WhatsApp del administrador <span style="color:var(--c-text-muted);font-size:11px">(informal)</span>
+    💬 Realizar una consulta al administrador (WhatsApp)
   </button>
 
   <div class="section-title">Mis solicitudes recientes</div>
   <div id="hist-list"></div>
 </section>
 
-<!-- COMPROBANTES -->
+<!-- PAGOS -->
 <section class="screen" id="screen-comprobantes">
-  <div class="section-title">Envío de comprobante de pago</div>
-  <div class="info-banner">
-    Envía el comprobante al contador del conjunto (<b id="comp-dest-email">contadorelmanana@gmail.com</b>). Recibes copia en tu correo registrado.
+  <div class="section-title">Pagos</div>
+
+  <div class="tabs" id="pay-tabs">
+    <button class="tab-btn active" data-tab="pagar">💳 Pagar administración</button>
+    <button class="tab-btn" data-tab="enviar">📧 Enviar comprobante</button>
   </div>
 
-  <div class="card">
-    <div class="card-title"><span class="ico">💰</span> Datos del pago</div>
-
-    <label class="field-label">Tipo de pago <span class="req">*</span></label>
-    <select id="comp-tipo">
-      <option value="Administración">Administración</option>
-      <option value="Parqueadero">Parqueadero</option>
-      <option value="Intereses / mora">Intereses / mora</option>
-      <option value="Multa / sanción">Multa / sanción</option>
-      <option value="Salón social">Salón social (reserva)</option>
-      <option value="Cuota extraordinaria">Cuota extraordinaria</option>
-      <option value="Otro">Otro</option>
-    </select>
-
-    <div class="row-2">
-      <div>
-        <label class="field-label">Mes del pago <span class="req">*</span></label>
-        <input id="comp-mes" type="month">
-      </div>
-      <div>
-        <label class="field-label">Monto pagado <span class="req">*</span></label>
-        <input id="comp-monto" type="text" placeholder="$" inputmode="numeric">
-      </div>
+  <!-- TAB: Pagar en línea -->
+  <div class="pay-tab" data-tab-content="pagar">
+    <div class="info-banner">
+      Paga tu cuota de administración en línea a través del portal de pagos <b>AVAL Pay Center</b> del Banco AV Villas. Esta opción te redirige al sitio oficial de pagos; no se realizan cobros dentro de la app.
     </div>
 
-    <label class="field-label">Medio de pago</label>
-    <select id="comp-medio">
-      <option value="Transferencia">Transferencia bancaria</option>
-      <option value="Consignación">Consignación</option>
-      <option value="Efectivo">Efectivo</option>
-      <option value="PSE">PSE / pago en línea</option>
-      <option value="Otro">Otro</option>
-    </select>
+    <div class="card">
+      <div class="card-title"><span class="ico">💳</span> Pago en línea</div>
+      <div style="font-size:14px;color:var(--c-text);line-height:1.6;margin-bottom:12px">
+        Al tocar el botón se abrirá en tu navegador el portal seguro de <b>AVAL Pay Center</b> con el convenio del conjunto preseleccionado. Sigue los pasos de la plataforma para completar tu pago.
+      </div>
 
-    <label class="field-label">Número de referencia / aprobación</label>
-    <input id="comp-ref" type="text" placeholder="Ej. 123456789">
+      <div class="pay-steps">
+        <div class="pay-step"><span class="pay-n">1</span><span>Ten a mano tu <b>número de referencia</b> o código de apartamento entregado por la administración.</span></div>
+        <div class="pay-step"><span class="pay-n">2</span><span>Toca el botón <b>"Ir a AVAL Pay Center"</b>.</span></div>
+        <div class="pay-step"><span class="pay-n">3</span><span>Completa el pago con tu banco.</span></div>
+        <div class="pay-step"><span class="pay-n">4</span><span>Regresa a la app y, si lo deseas, usa la pestaña <b>"Enviar comprobante"</b> para remitir el soporte al contador.</span></div>
+      </div>
 
-    <label class="field-label">Observaciones</label>
-    <textarea id="comp-obs" rows="2" placeholder="Aclaraciones (opcional)"></textarea>
+      <a class="btn btn-primary" id="btn-pagar-online" href="https://www.avalpaycenter.com/wps/portal/portal-de-pagos/web/banco-avvillas/resultado-busqueda/realizar-pago?idConv=00009137" target="_blank" rel="noopener">💳 Ir a AVAL Pay Center</a>
+      <div style="height:8px"></div>
+      <button class="btn btn-secondary" onclick="copiarUrlPago()">📋 Copiar enlace de pago</button>
+      <div class="field-hint" style="margin-top:10px">Convenio AV Villas: <b>00009137</b> — Conjunto Residencial El Mañana.</div>
+    </div>
 
-    <label class="field-label">Foto del comprobante <span class="req">*</span></label>
-    <input id="comp-file" type="file" accept="image/*" capture="environment" onchange="previewComprobante(event)">
-    <div class="field-hint">Toma una foto clara del recibo, transferencia o consignación.</div>
-    <img id="comp-preview" class="img-preview" style="display:none" alt="Vista previa">
+    <div class="warn-banner" style="background:#EFF6FF;border-color:#BFDBFE;color:#1E40AF">
+      <b>Importante:</b> la app <u>no</u> procesa pagos. El pago se realiza en el portal oficial del banco. Si tienes dudas sobre tu cuota, consulta con la administración antes de pagar.
+    </div>
   </div>
 
-  <div class="card">
-    <div class="card-title"><span class="ico">📧</span> Envío</div>
-    <p style="font-size:13px;color:var(--c-text-muted);margin-bottom:12px">
-      Al tocar "Enviar comprobante" se abrirá tu app de correo con todos los datos prellenados. <b>Debes adjuntar manualmente la foto</b> que subiste si tu dispositivo no lo hace automáticamente.
-    </p>
-    <button class="btn btn-success" onclick="enviarComprobante()">📧 Enviar comprobante</button>
-  </div>
+  <!-- TAB: Enviar comprobante -->
+  <div class="pay-tab" data-tab-content="enviar" style="display:none">
+    <div class="info-banner">
+      Envía el comprobante al contador del conjunto (<b id="comp-dest-email">contadorelmanana@gmail.com</b>). Recibes copia en tu correo registrado.
+    </div>
 
-  <div class="section-title">Mis comprobantes enviados</div>
-  <div id="comp-hist-list"></div>
+    <div class="card">
+      <div class="card-title"><span class="ico">💰</span> Datos del pago</div>
+
+      <label class="field-label">Tipo de pago <span class="req">*</span></label>
+      <select id="comp-tipo">
+        <option value="Administración">Administración</option>
+        <option value="Parqueadero">Parqueadero</option>
+        <option value="Intereses / mora">Intereses / mora</option>
+        <option value="Multa / sanción">Multa / sanción</option>
+        <option value="Salón social">Salón social (reserva)</option>
+        <option value="Cuota extraordinaria">Cuota extraordinaria</option>
+        <option value="Otro">Otro</option>
+      </select>
+
+      <div class="row-2">
+        <div>
+          <label class="field-label">Mes del pago <span class="req">*</span></label>
+          <input id="comp-mes" type="month">
+        </div>
+        <div>
+          <label class="field-label">Monto pagado <span class="req">*</span></label>
+          <input id="comp-monto" type="text" placeholder="$" inputmode="numeric">
+        </div>
+      </div>
+
+      <label class="field-label">Medio de pago</label>
+      <select id="comp-medio">
+        <option value="Transferencia">Transferencia bancaria</option>
+        <option value="Consignación">Consignación</option>
+        <option value="Efectivo">Efectivo</option>
+        <option value="PSE">PSE / pago en línea</option>
+        <option value="AVAL Pay Center">AVAL Pay Center</option>
+        <option value="Otro">Otro</option>
+      </select>
+
+      <label class="field-label">Número de referencia / aprobación</label>
+      <input id="comp-ref" type="text" placeholder="Ej. 123456789">
+
+      <label class="field-label">Observaciones</label>
+      <textarea id="comp-obs" rows="2" placeholder="Aclaraciones (opcional)"></textarea>
+
+      <label class="field-label">Foto del comprobante <span class="req">*</span></label>
+      <input id="comp-file" type="file" accept="image/*" capture="environment" onchange="previewComprobante(event)">
+      <div class="field-hint">Toma una foto clara del recibo, transferencia o consignación.</div>
+      <img id="comp-preview" class="img-preview" style="display:none" alt="Vista previa">
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="ico">📧</span> Envío</div>
+      <p style="font-size:13px;color:var(--c-text-muted);margin-bottom:12px">
+        Al tocar "Enviar comprobante" se abrirá tu app de correo con todos los datos prellenados. <b>Debes adjuntar manualmente la foto</b> que subiste si tu dispositivo no lo hace automáticamente.
+      </p>
+      <button class="btn btn-success" onclick="enviarComprobante()">📧 Enviar comprobante</button>
+    </div>
+
+    <div class="section-title">Mis comprobantes enviados</div>
+    <div id="comp-hist-list"></div>
+  </div>
 </section>
 
 <!-- NOTICIAS -->
@@ -618,9 +684,9 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
 
     <div class="card">
       <div class="card-title"><span class="ico">📞</span> Teléfonos</div>
-      <label class="field-label">WhatsApp del administrador (canal alterno)</label>
+      <label class="field-label">WhatsApp del administrador (canal de consulta)</label>
       <input id="adm-whats" type="tel" placeholder="573001234567" inputmode="numeric">
-      <div class="field-hint">Formato internacional sin + ni espacios. Solo para consultas informales.</div>
+      <div class="field-hint">Formato internacional sin + ni espacios. Canal para consultas al administrador.</div>
       <label class="field-label">Teléfono portería</label>
       <input id="adm-porteria" type="tel" inputmode="tel">
       <label class="field-label">Número de emergencia</label>
@@ -941,7 +1007,7 @@ Enviado desde la App Oficial del Conjunto El Mañana.`,
     intro:'Solicita el detalle de tu estado de cuenta de administración.',
     fields: [
       {id:'periodo',label:'Período a consultar',type:'text',placeholder:'Ej. Marzo 2026 o últimos 3 meses',required:true},
-      {id:'formato',label:'Formato de entrega',type:'select',options:['Correo electrónico','WhatsApp','Impreso en administración'],required:true},
+      {id:'formato',label:'Formato de entrega',type:'select',options:['Correo electrónico','Impreso en administración'],required:true},
       {id:'motivo',label:'Motivo (opcional)',type:'textarea',placeholder:'Detalle específico, si aplica…'},
     ],
     msg: (d,u,c,r) =>
@@ -1137,7 +1203,7 @@ Enviado desde la App Oficial del Conjunto El Mañana.`,
     intro:'Reporta daños o fallas en zonas comunes.',
     fields: [
       {id:'area',label:'Área afectada',type:'select',required:true,
-        options:['Portería','Ascensor','Salón social','Piscina','Parqueaderos','Pasillos / escaleras','Zonas verdes','Iluminación','Otra']},
+        options:['Portería','Salón social','Parque','Canecas de basura','Parqueaderos','Pasillos / escaleras','Zonas verdes','Iluminación','Otra']},
       {id:'ubicacion',label:'Ubicación específica',type:'text',placeholder:'Ej. Bloque F, piso 2',required:true},
       {id:'descripcion',label:'Descripción del daño',type:'textarea',required:true},
       {id:'urgencia',label:'Urgencia',type:'select',options:['Baja','Media','Alta (afecta seguridad o servicios)']},
@@ -1319,7 +1385,11 @@ function showScreen(id) {
   if (id === 'solicitudes') renderHist();
   if (id === 'comprobantes') renderCompHist();
   if (id === 'admin') renderAdmin();
-  if (id === 'register') renderVehiculosInputs();
+  if (id === 'register') {
+    renderVehiculosInputs();
+    const pn = $('privacy-nombre');
+    if (pn && state.config && state.config.nombre) pn.textContent = state.config.nombre;
+  }
 }
 
 /* =================== REGISTRO =================== */
@@ -1372,14 +1442,19 @@ function doRegister() {
   const tel = $('reg-tel').value.trim();
   const email = $('reg-email').value.trim();
   const vehiculos = readVehiculosFromForm();
+  const autorizaEl = $('reg-autoriza');
+  const autoriza = !!(autorizaEl && autorizaEl.checked);
   if (!nombre || !doc || !bloque || !casa || !tel || !email) { toast('Completa los campos obligatorios', 'error'); return; }
   if (!/@/.test(email)) { toast('Correo electrónico inválido', 'error'); return; }
+  if (!autoriza) { toast('Debes autorizar el tratamiento de datos personales', 'error'); return; }
 
   const prev = state.user || {};
   state.user = {
     nombre, tipoDoc, doc, bloque, casa, rol, tel, email, vehiculos,
     registrado: prev.registrado || Date.now(),
     consecutivo: prev.consecutivo || 0,
+    autoriza: true,
+    autorizaDate: prev.autorizaDate || Date.now(),
   };
   store.set(K.USER, state.user);
   toast('¡Datos guardados!', 'success');
@@ -1397,6 +1472,7 @@ function editarDatos() {
   $('reg-rol').value = u.rol || 'Propietario';
   $('reg-tel').value = u.tel || '';
   $('reg-email').value = u.email || '';
+  const chk = $('reg-autoriza'); if (chk) chk.checked = !!u.autoriza;
   renderVehiculosInputs();
   showScreen('register');
 }
@@ -1521,7 +1597,7 @@ function contactarAdminWhats() {
   if (!w) { toast('El administrador no ha configurado su WhatsApp', 'error'); return; }
   const nombre = state.user ? state.user.nombre : 'Residente';
   const ubic = state.user ? ` (Bloque ${state.user.bloque} · Casa ${state.user.casa})` : '';
-  const msg = encodeURIComponent(`Hola, soy ${nombre}${ubic}, residente del ${state.config.nombre}. Quisiera realizar una consulta informal.`);
+  const msg = encodeURIComponent(`Hola, soy ${nombre}${ubic}, residente del ${state.config.nombre}. Quisiera realizar una consulta.`);
   window.open(`https://wa.me/${w}?text=${msg}`, '_blank');
 }
 function llamarPorteria() {
@@ -1566,9 +1642,7 @@ function openSolicitud(tipo) {
 
   html += `
     <div style="margin-top:18px">
-      <button class="btn btn-primary" onclick="enviarSolicitud('email')">📧 Enviar por correo (oficial)</button>
-      <div style="height:8px"></div>
-      <button class="btn btn-secondary" onclick="enviarSolicitud('whatsapp')">💬 Enviar por WhatsApp (alterno)</button>
+      <button class="btn btn-primary" onclick="enviarSolicitud('email')">📧 Enviar por correo</button>
       <div style="height:8px"></div>
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
     </div>`;
@@ -1610,7 +1684,7 @@ function collectSolicitud() {
   return data;
 }
 
-function enviarSolicitud(canal) {
+function enviarSolicitud(_canal) {
   const data = collectSolicitud();
   if (!data) return;
   const s = state.currentSolicitud.def;
@@ -1619,7 +1693,7 @@ function enviarSolicitud(canal) {
   const msg = s.msg(data, state.user, state.config, ref);
 
   state.hist.unshift({
-    id: Date.now().toString(), tipo, title: s.title, canal, data, ref,
+    id: Date.now().toString(), tipo, title: s.title, canal: 'email', data, ref,
     snippet: (data.descripcion || data.obs || data.asunto || data.motivo || '').slice(0, 120),
     date: Date.now(),
   });
@@ -1627,19 +1701,11 @@ function enviarSolicitud(canal) {
   store.set(K.HIST, state.hist);
 
   const subj = `[${ref}] ${s.title} — ${state.user.nombre} (Bloque ${state.user.bloque}·Casa ${state.user.casa})`;
-
-  if (canal === 'whatsapp') {
-    const w = state.config.whats;
-    if (!w) { toast('Admin no ha configurado WhatsApp', 'error'); return; }
-    const waMsg = `*${subj}*\n\n${msg}`;
-    window.open(`https://wa.me/${w}?text=${encodeURIComponent(waMsg)}`, '_blank');
-  } else {
-    const to = state.config.email_1;
-    const cc = [state.config.email_2, state.user.email].filter(Boolean).join(',');
-    if (!to) { toast('Admin no ha configurado correo principal', 'error'); return; }
-    const url = `mailto:${to}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(msg)}`;
-    window.open(url, '_blank');
-  }
+  const to = state.config.email_1;
+  const cc = [state.config.email_2, state.user.email].filter(Boolean).join(',');
+  if (!to) { toast('Admin no ha configurado correo principal', 'error'); return; }
+  const url = `mailto:${to}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
 
   closeModal();
   toast('Solicitud ' + ref + ' preparada', 'success');
@@ -1660,7 +1726,7 @@ function renderHist() {
   list.innerHTML = state.hist.map(h => `
     <div class="hist-item">
       <div class="hist-type">${escapeHtml(h.title || h.tipo)} <span class="hist-ref">${escapeHtml(h.ref || '—')}</span></div>
-      <div class="hist-date">${fmtDateTime(h.date)} · ${h.canal === 'whatsapp' ? 'WhatsApp' : 'Correo'}</div>
+      <div class="hist-date">${fmtDateTime(h.date)} · Correo</div>
       ${h.snippet ? `<div class="hist-body">${escapeHtml(h.snippet)}…</div>` : ''}
     </div>`).join('');
 }
@@ -1987,6 +2053,23 @@ function setupAdminTabs() {
   });
 }
 
+function setupPayTabs() {
+  $$('#pay-tabs .tab-btn').forEach(btn => {
+    btn.onclick = () => {
+      $$('#pay-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const tab = btn.dataset.tab;
+      $$('.pay-tab').forEach(t => t.style.display = t.dataset.tabContent === tab ? 'block' : 'none');
+    };
+  });
+}
+
+async function copiarUrlPago() {
+  const url = 'https://www.avalpaycenter.com/wps/portal/portal-de-pagos/web/banco-avvillas/resultado-busqueda/realizar-pago?idConv=00009137';
+  try { await navigator.clipboard.writeText(url); toast('Enlace copiado', 'success'); }
+  catch { prompt('Copia el enlace:', url); }
+}
+
 function setupHeaderTap() {
   $('app-header').addEventListener('click', () => {
     state.hdrTapCount++;
@@ -2000,6 +2083,7 @@ function setupHeaderTap() {
 async function init() {
   loadLocal();
   setupAdminTabs();
+  setupPayTabs();
   setupHeaderTap();
 
   // Start: local view
