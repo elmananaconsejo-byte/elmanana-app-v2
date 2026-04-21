@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-04-21T16:40:31.582Z",
+  "updated": "2026-04-21T18:20:49.960Z",
   "config": {
     "nombre": "Conjunto El Mañana",
     "subtitulo": "Hogares de Soacha",
@@ -9,8 +9,8 @@
     "email_1": "giober302@gmail.com",
     "email_2": "consejoelmanana@gmail.com",
     "email_contador": "contadorelmanana@gmail.com",
-    "whats": "3016587740",
-    "porteria": "3016587740",
+    "whats": "573058387125",
+    "porteria": "3152201771",
     "emergencia": "123",
     "hor_lun": "3:00 p.m. – 7:00 p.m.",
     "hor_mar": "8:00 a.m. – 12:00 m.",
@@ -21,19 +21,19 @@
     "hor_dom": "Cerrado",
     "hor_salon": "10:00 a.m. – 11:00 p.m. (con reserva previa)",
     "hor_zonas": "6:00 a.m. – 10:00 p.m.",
-    "hor_basura": "Martes, jueves y sábado a partir de las 6:00 p.m.",
+    "hor_basura": "Lunes, Miércoles, Viernes y Domingos a partir de las 5:00 p.m.",
     "descripcion": "Conjunto residencial ubicado en el municipio de Soacha, Cundinamarca. Forma parte del proyecto Hogares de Soacha. Cuenta con zonas comunes, salón social, parqueaderos y portería con vigilancia permanente.\n\nPersonaliza este texto desde el panel de administración.",
-    "reglamento": "1. Cumplir los horarios de zonas comunes.\n2. Respetar a los vecinos y empleados del conjunto.\n3. Controlar el volumen de música y eventos, especialmente después de las 10:00 p.m.\n4. Asear los espacios comunes después de usarlos.\n5. Reportar cualquier daño en portería o a la administración.\n6. Las mascotas deben salir siempre con correa y sus dueños son responsables del aseo.\n7. No se permite arrojar basuras fuera de los horarios y sitios designados.\n\nEste reglamento puede ser actualizado desde el panel de administración.",
+    "reglamento": "1. Cumplir los horarios de zonas comunes \n2. Respetar a los vecinos y empleados del conjunto.\n3. Controlar el volumen de música y eventos, especialmente después de las 10:00 p.m.\n4. Asear los espacios comunes después de usarlos.\n5. Reportar cualquier daño en portería o a la administración.\n6. Las mascotas deben salir siempre con correa y sus dueños son responsables del aseo.\n7. No se permite arrojar basuras fuera de los horarios y sitios designados.\n\nEste reglamento puede ser actualizado desde el panel de administración.",
     "hor_admin": "Lun–Vie 8:00 a.m. – 5:00 p.m. / Sáb 9:00 a.m. – 12:00 m."
   },
   "news": [
     {
-      "id": "1776789626038",
-      "title": "Boletín Informativo 1er Trimestre 2026",
-      "body": "La gestión de este informe también fue publicado en nuestro canal de WhatsApp.",
-      "img": "https://postimg.cc/4H5G98mV",
+      "id": "1776794567327",
+      "title": "Boletín Trimestral El Mañana",
+      "body": "Este también fue compartido por nuestro canal de WhatsApp.",
+      "img": "https://i.postimg.cc/d3wrk5D4/01092e75-71aa-4770-b5e2-dcc4e185ba85.jpg",
       "tag": "Comunicado",
-      "date": 1776789626038
+      "date": 1776794567327
     },
     {
       "id": "1776784706225",
