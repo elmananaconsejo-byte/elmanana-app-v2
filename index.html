@@ -948,28 +948,28 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
     </div>
     <div id="email-picker-summary" class="email-picker-summary"></div>
     <p style="font-size:13px;color:var(--c-text-muted);margin-bottom:12px;line-height:1.45">
-      Selecciona desde qué aplicación deseas enviar este correo. Si en tu iPhone se abre Mail por defecto y no lo tienes configurado, usa Gmail, Outlook o copia el mensaje.
+      Se intentará abrir directamente la app instalada en tu dispositivo. Si no la tienes, te llevaremos a la versión web como respaldo.
     </p>
     <div class="email-picker-grid">
       <button type="button" class="email-app-btn" onclick="sendViaApp('gmail')">
         <div class="eap-icon gm">G</div>
-        <div class="eap-text"><div class="eap-name">Gmail</div><div class="eap-hint">Abrir en web o app</div></div>
+        <div class="eap-text"><div class="eap-name">Gmail</div><div class="eap-hint">App si está instalada · si no, web</div></div>
       </button>
       <button type="button" class="email-app-btn" onclick="sendViaApp('outlook')">
         <div class="eap-icon out">O</div>
-        <div class="eap-text"><div class="eap-name">Outlook</div><div class="eap-hint">Abrir en web o app</div></div>
+        <div class="eap-text"><div class="eap-name">Outlook</div><div class="eap-hint">App si está instalada · si no, web</div></div>
       </button>
       <button type="button" class="email-app-btn" onclick="sendViaApp('yahoo')">
         <div class="eap-icon yh">Y</div>
-        <div class="eap-text"><div class="eap-name">Yahoo Mail</div><div class="eap-hint">Abrir en web</div></div>
+        <div class="eap-text"><div class="eap-name">Yahoo Mail</div><div class="eap-hint">App si está instalada · si no, web</div></div>
       </button>
       <button type="button" class="email-app-btn" onclick="sendViaApp('mailto')">
         <div class="eap-icon ap">✉</div>
-        <div class="eap-text"><div class="eap-name">App por defecto</div><div class="eap-hint">Mail / Outlook instalado</div></div>
+        <div class="eap-text"><div class="eap-name">App por defecto</div><div class="eap-hint">La que tengas asignada en el sistema</div></div>
       </button>
       <button type="button" class="email-app-btn" style="grid-column:1/-1" onclick="sendViaApp('copy')">
         <div class="eap-icon cp">📋</div>
-        <div class="eap-text"><div class="eap-name">Copiar al portapapeles</div><div class="eap-hint">Pega el correo donde prefieras</div></div>
+        <div class="eap-text"><div class="eap-name">Copiar al portapapeles</div><div class="eap-hint">Pégalo donde prefieras</div></div>
       </button>
     </div>
   </div>
@@ -1792,40 +1792,116 @@ function closeEmailPicker() {
   EMAIL_STATE.pending = null;
 }
 
+function isMobileDevice() {
+  return /iPhone|iPad|iPod|Android|Windows Phone/i.test(navigator.userAgent || '');
+}
+
+// Intenta abrir la app nativa; si no está instalada, cae a la URL web después de un pequeño delay.
+// En iOS/Android, abrir la app hace que la pestaña quede oculta → usamos visibilitychange
+// como señal de "éxito" y cancelamos el fallback al web.
+function launchAppWithWebFallback(appUrl, webUrl) {
+  if (!isMobileDevice()) {
+    // Escritorio: los esquemas nativos (googlegmail://, ms-outlook://) normalmente no están
+    // registrados; ir directo a la web evita diálogos de error.
+    try { window.open(webUrl, '_blank', 'noopener'); } catch (e) { window.location.href = webUrl; }
+    return;
+  }
+  let appOpened = false;
+  const onHide = () => { if (document.hidden) appOpened = true; };
+  document.addEventListener('visibilitychange', onHide);
+
+  const t0 = Date.now();
+  // Intento de abrir la app nativa
+  try { window.location.href = appUrl; } catch (e) { /* ignore */ }
+
+  // Si en ~1.5s seguimos visibles, asumimos que la app no está instalada → web
+  setTimeout(() => {
+    document.removeEventListener('visibilitychange', onHide);
+    const elapsed = Date.now() - t0;
+    if (!appOpened && !document.hidden && elapsed < 2500) {
+      try { window.open(webUrl, '_blank', 'noopener'); } catch (e) { window.location.href = webUrl; }
+    }
+  }, 1500);
+}
+
 function sendViaApp(app) {
   const o = EMAIL_STATE.pending;
   if (!o) { closeEmailPicker(); return; }
   const to = o.to, cc = o.cc || '', subj = o.subject || '', body = o.body || '';
   const successMsg = o.successMsg || 'Correo preparado';
-  let url = '';
+
+  // URLs de app nativa (iOS/Android soportan estos esquemas si la app está instalada)
+  const gmailApp = (() => {
+    // Gmail iOS/Android: googlegmail://co?to=...&subject=...&body=...
+    let u = 'googlegmail://co?to=' + encodeURIComponent(to);
+    if (cc) u += '&cc=' + encodeURIComponent(cc);
+    if (subj) u += '&subject=' + encodeURIComponent(subj);
+    if (body) u += '&body=' + encodeURIComponent(body);
+    return u;
+  })();
+  const gmailWeb = (() => {
+    let u = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(to);
+    if (cc) u += '&cc=' + encodeURIComponent(cc);
+    if (subj) u += '&su=' + encodeURIComponent(subj);
+    if (body) u += '&body=' + encodeURIComponent(body);
+    return u;
+  })();
+  const outlookApp = (() => {
+    // Outlook iOS/Android: ms-outlook://compose?to=...&subject=...&body=...
+    let u = 'ms-outlook://compose?to=' + encodeURIComponent(to);
+    if (subj) u += '&subject=' + encodeURIComponent(subj);
+    if (body) u += '&body=' + encodeURIComponent(body);
+    // Nota: Outlook móvil no soporta CC confiablemente por URL; se añade al body si existe.
+    return u;
+  })();
+  const outlookBody = cc ? ('CC: ' + cc + '\n\n' + body) : body;
+  const outlookAppCC = (() => {
+    let u = 'ms-outlook://compose?to=' + encodeURIComponent(to);
+    if (subj) u += '&subject=' + encodeURIComponent(subj);
+    if (outlookBody) u += '&body=' + encodeURIComponent(outlookBody);
+    return u;
+  })();
+  const outlookWeb = (() => {
+    let u = 'https://outlook.live.com/mail/0/deeplink/compose?to=' + encodeURIComponent(to);
+    if (cc) u += '&cc=' + encodeURIComponent(cc);
+    if (subj) u += '&subject=' + encodeURIComponent(subj);
+    if (body) u += '&body=' + encodeURIComponent(body);
+    return u;
+  })();
+  const yahooApp = (() => {
+    // Yahoo Mail iOS/Android: ymail://mail/compose?to=...
+    let u = 'ymail://mail/compose?to=' + encodeURIComponent(to);
+    if (subj) u += '&subject=' + encodeURIComponent(subj);
+    if (body) u += '&body=' + encodeURIComponent(body);
+    return u;
+  })();
+  const yahooWeb = (() => {
+    let u = 'https://compose.mail.yahoo.com/?to=' + encodeURIComponent(to);
+    if (cc) u += '&cc=' + encodeURIComponent(cc);
+    if (subj) u += '&subj=' + encodeURIComponent(subj);
+    if (body) u += '&body=' + encodeURIComponent(body);
+    return u;
+  })();
+  const mailtoUrl = (() => {
+    let u = 'mailto:' + to;
+    const p = [];
+    if (cc) p.push('cc=' + encodeURIComponent(cc));
+    if (subj) p.push('subject=' + encodeURIComponent(subj));
+    if (body) p.push('body=' + encodeURIComponent(body));
+    if (p.length) u += '?' + p.join('&');
+    return u;
+  })();
+
   try {
     if (app === 'gmail') {
-      // Gmail web compose — works on desktop and Android Chrome; on iOS abre web, no la app nativa por defecto
-      url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}`;
-      if (cc) url += `&cc=${encodeURIComponent(cc)}`;
-      if (subj) url += `&su=${encodeURIComponent(subj)}`;
-      if (body) url += `&body=${encodeURIComponent(body)}`;
-      window.open(url, '_blank', 'noopener');
+      launchAppWithWebFallback(gmailApp, gmailWeb);
     } else if (app === 'outlook') {
-      url = `https://outlook.live.com/mail/0/deeplink/compose?to=${encodeURIComponent(to)}`;
-      if (cc) url += `&cc=${encodeURIComponent(cc)}`;
-      if (subj) url += `&subject=${encodeURIComponent(subj)}`;
-      if (body) url += `&body=${encodeURIComponent(body)}`;
-      window.open(url, '_blank', 'noopener');
+      launchAppWithWebFallback(outlookAppCC, outlookWeb);
     } else if (app === 'yahoo') {
-      url = `https://compose.mail.yahoo.com/?to=${encodeURIComponent(to)}`;
-      if (cc) url += `&cc=${encodeURIComponent(cc)}`;
-      if (subj) url += `&subj=${encodeURIComponent(subj)}`;
-      if (body) url += `&body=${encodeURIComponent(body)}`;
-      window.open(url, '_blank', 'noopener');
+      launchAppWithWebFallback(yahooApp, yahooWeb);
     } else if (app === 'mailto') {
-      url = `mailto:${to}`;
-      const params = [];
-      if (cc) params.push('cc=' + encodeURIComponent(cc));
-      if (subj) params.push('subject=' + encodeURIComponent(subj));
-      if (body) params.push('body=' + encodeURIComponent(body));
-      if (params.length) url += '?' + params.join('&');
-      window.location.href = url;
+      // App por defecto del dispositivo (Mail en iPhone, app asignada en Android)
+      window.location.href = mailtoUrl;
     } else if (app === 'copy') {
       const text = `Para: ${to}\n` + (cc ? `CC: ${cc}\n` : '') + (subj ? `Asunto: ${subj}\n` : '') + '\n' + body;
       copyEmailToClipboard(text);
