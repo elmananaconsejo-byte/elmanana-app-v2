@@ -108,12 +108,34 @@ textarea{resize:vertical;min-height:90px}
 .carnet-qr .qr-text{font-size:11px;opacity:0.85;line-height:1.4}
 
 .news-item{background:var(--c-card);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden}
-.news-img{width:100%;height:140px;background-size:cover;background-position:center;background-color:var(--c-border)}
+.news-img{position:relative;width:100%;height:140px;background-size:cover;background-position:center;background-color:var(--c-border);cursor:zoom-in;border:0;padding:0;display:block}
+.news-img::after{content:"🔍";position:absolute;right:8px;bottom:8px;background:rgba(21,40,71,0.72);color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;opacity:0.9;pointer-events:none}
+.news-img:focus{outline:2px solid var(--c-gold);outline-offset:-4px}
 .news-body{padding:14px}
 .news-date{font-size:11px;color:var(--c-text-muted);text-transform:uppercase;letter-spacing:0.5px}
 .news-title{font-size:16px;font-weight:700;color:var(--c-primary);margin:4px 0 6px}
 .news-body-text{font-size:14px;color:var(--c-text);line-height:1.5}
 .news-tag{display:inline-block;padding:2px 8px;background:var(--c-gold);color:var(--c-primary-dark);font-size:10px;font-weight:700;letter-spacing:0.5px;border-radius:4px;text-transform:uppercase;margin-bottom:6px}
+
+.news-actions{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--c-border)}
+.news-action-btn{display:inline-flex;align-items:center;gap:6px;background:transparent;border:1.5px solid var(--c-border);border-radius:999px;padding:7px 14px;font-family:inherit;font-size:13px;color:var(--c-text);cursor:pointer;transition:all 0.15s;-webkit-tap-highlight-color:transparent}
+.news-action-btn:hover,.news-action-btn:focus{border-color:var(--c-primary);outline:none}
+.news-action-btn:active{transform:scale(0.96)}
+.news-action-btn .ni{font-size:15px;line-height:1}
+.news-action-btn.like.liked{background:#FEE2E2;border-color:#FCA5A5;color:#B91C1C}
+.news-action-btn.like.liked .ni{filter:none}
+.news-action-btn.wa{border-color:#D1FAE5;color:#065F46;background:#ECFDF5}
+.news-action-btn.wa:hover,.news-action-btn.wa:focus{border-color:#10B981;background:#D1FAE5}
+.news-like-count{font-weight:700;min-width:10px;text-align:left}
+.news-actions .spacer{flex:1}
+
+/* Image lightbox (ampliar noticia) */
+.lightbox-backdrop{display:none;position:fixed;inset:0;background:rgba(8,14,28,0.92);z-index:200;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+.lightbox-backdrop.show{display:flex;animation:fadeIn 0.18s}
+.lightbox-img{max-width:100%;max-height:86vh;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,0.6);display:block}
+.lightbox-close{position:absolute;top:calc(var(--safe-top) + 12px);right:16px;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:white;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.lightbox-close:hover,.lightbox-close:focus{background:rgba(255,255,255,0.25);outline:none}
+.lightbox-caption{position:absolute;left:16px;right:16px;bottom:calc(var(--safe-bottom) + 16px);color:white;text-align:center;font-size:13px;opacity:0.85;text-shadow:0 1px 2px rgba(0,0,0,0.6)}
 
 .service-grid{display:grid;gap:10px}
 .service-tile{display:flex;align-items:center;gap:14px;background:var(--c-card);border:1.5px solid var(--c-border);border-radius:var(--radius-md);padding:14px;cursor:pointer;text-align:left;width:100%;font-family:inherit;transition:all 0.15s}
@@ -988,6 +1010,12 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
   </div>
 </div>
 
+<div class="lightbox-backdrop" id="lightbox-backdrop" onclick="closeLightbox(event)" role="dialog" aria-label="Vista ampliada" aria-modal="true">
+  <button type="button" class="lightbox-close" aria-label="Cerrar" onclick="closeLightbox(event,true)">✕</button>
+  <img class="lightbox-img" id="lightbox-img" alt="">
+  <div class="lightbox-caption" id="lightbox-caption"></div>
+</div>
+
 <script>
 /* =================== CONSTANTS =================== */
 const APP_VERSION = '4.0';
@@ -1003,6 +1031,7 @@ const K = {
   USER:'emn_user', HIST:'emn_hist', COMP:'emn_comp',
   SEQ:'emn_seq', HOGAR:'emn_hogar',
   CONFIG_DRAFT:'emn_config_draft', NEWS_DRAFT:'emn_news_draft',
+  NEWS_LIKES:'emn_news_likes', // ids de noticias que este dispositivo ya marcó con "me gusta"
   // Legacy keys (migrados al arrancar v4)
   CONFIG:'emn_config', NEWS:'emn_news',
 };
@@ -1780,9 +1809,98 @@ function renderHome() {
 }
 
 function renderNewsCard(n) {
-  const img = n.img ? `<div class="news-img" style="background-image:url('${escapeHtml(n.img)}')"></div>` : '';
+  const nid = escapeHtml(String(n.id || ''));
+  const imgSafe = n.img ? escapeHtml(n.img) : '';
+  const titleSafe = escapeHtml(n.title || '');
+  const img = n.img
+    ? `<button type="button" class="news-img" style="background-image:url('${imgSafe}')" onclick="openLightboxForNews('${nid}')" aria-label="Ampliar imagen de: ${titleSafe}"></button>`
+    : '';
   const tag = n.tag ? `<span class="news-tag">${escapeHtml(n.tag)}</span>` : '';
-  return `<div class="news-item">${img}<div class="news-body">${tag}<div class="news-date">${fmtDateShort(n.date)}</div><div class="news-title">${escapeHtml(n.title)}</div><div class="news-body-text">${escapeHtml(n.body).replace(/\n/g,'<br>')}</div></div></div>`;
+  const liked = hasLiked(n.id);
+  const count = getLikeCount(n);
+  const likeBtn = `<button type="button" class="news-action-btn like${liked?' liked':''}" onclick="toggleNewsLike('${nid}', this)" aria-pressed="${liked?'true':'false'}" aria-label="Me gusta"><span class="ni">${liked?'❤️':'🤍'}</span><span>Me gusta</span>${count>0?`<span class="news-like-count">${count}</span>`:''}</button>`;
+  const waBtn = `<button type="button" class="news-action-btn wa" onclick="whatsappNews('${nid}')" aria-label="Enviar comentario por WhatsApp al administrador"><span class="ni">💬</span><span>WhatsApp</span></button>`;
+  return `<div class="news-item" data-news-id="${nid}">${img}<div class="news-body">${tag}<div class="news-date">${fmtDateShort(n.date)}</div><div class="news-title">${titleSafe}</div><div class="news-body-text">${escapeHtml(n.body||'').replace(/\n/g,'<br>')}</div><div class="news-actions">${likeBtn}<span class="spacer"></span>${waBtn}</div></div></div>`;
+}
+
+function openLightboxForNews(id) {
+  const n = (state.news || []).find(x => String(x.id) === String(id));
+  if (!n || !n.img) return;
+  openLightbox(n.img, n.title || '');
+}
+
+/* =================== NOTICIAS: likes, lightbox, whatsapp =================== */
+function getLikedSet() {
+  const arr = store.get(K.NEWS_LIKES, []);
+  return new Set(Array.isArray(arr) ? arr.map(String) : []);
+}
+function saveLikedSet(set) {
+  store.set(K.NEWS_LIKES, Array.from(set));
+}
+function hasLiked(id) {
+  if (!id) return false;
+  return getLikedSet().has(String(id));
+}
+function getLikeCount(n) {
+  // Conteo "social": base remoto (si existiera) + 1 si este dispositivo ya le dio like.
+  const base = Number(n && n.likes) || 0;
+  return base + (hasLiked(n && n.id) ? 1 : 0);
+}
+function toggleNewsLike(id, btn) {
+  if (!id) return;
+  const set = getLikedSet();
+  const sid = String(id);
+  const nowLiked = !set.has(sid);
+  if (nowLiked) { set.add(sid); toast('¡Gracias por tu me gusta!', 'success'); }
+  else { set.delete(sid); }
+  saveLikedSet(set);
+  // Re-render actual para reflejar conteo y estado en todas las pantallas donde se muestra la noticia.
+  if ($('screen-noticias') && $('screen-noticias').classList.contains('active')) renderNews();
+  if ($('screen-home') && $('screen-home').classList.contains('active')) renderHome();
+}
+
+function whatsappNews(id) {
+  const w = state.config && state.config.whats;
+  if (!w) { toast('El administrador no ha configurado su WhatsApp', 'error'); return; }
+  const n = (state.news || []).find(x => String(x.id) === String(id));
+  const titulo = n ? n.title : 'una publicación';
+  const nombre = state.user ? state.user.nombre : 'Residente';
+  const ubic = state.user ? ` (Bloque ${state.user.bloque} · Casa ${state.user.casa})` : '';
+  const msg = encodeURIComponent(
+    `Hola, soy ${nombre}${ubic}, residente del ${state.config.nombre}. Quisiera hacer un comentario sobre la publicación: "${titulo}".`
+  );
+  window.open(`https://wa.me/${w}?text=${msg}`, '_blank');
+}
+
+let _lightboxPrevFocus = null;
+function openLightbox(src, caption) {
+  if (!src) return;
+  const img = $('lightbox-img');
+  const cap = $('lightbox-caption');
+  const bd = $('lightbox-backdrop');
+  img.src = src;
+  img.alt = caption || '';
+  cap.textContent = caption || '';
+  _lightboxPrevFocus = document.activeElement;
+  bd.classList.add('show');
+  // Escape para cerrar
+  document.addEventListener('keydown', lightboxKeyHandler);
+}
+function lightboxKeyHandler(e) {
+  if (e.key === 'Escape') closeLightbox(null, true);
+}
+function closeLightbox(e, force) {
+  // Clic sólo sobre la imagen no debe cerrar; sí cerramos al clicar fondo o X
+  if (e && !force) {
+    const tgt = e.target;
+    if (tgt && tgt.id !== 'lightbox-backdrop' && tgt.id !== 'lightbox-caption') return;
+  }
+  const bd = $('lightbox-backdrop');
+  bd.classList.remove('show');
+  const img = $('lightbox-img');
+  img.src = '';
+  document.removeEventListener('keydown', lightboxKeyHandler);
+  if (_lightboxPrevFocus && _lightboxPrevFocus.focus) { try { _lightboxPrevFocus.focus(); } catch(_){} }
 }
 
 function renderNews() {
