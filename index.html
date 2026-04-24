@@ -37,6 +37,13 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .app-header .brand{flex:1;min-width:0}
 .app-header h1{font-size:16px;font-weight:700;letter-spacing:0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .app-header .subtitle{font-size:11px;opacity:0.8;letter-spacing:0.5px;text-transform:uppercase}
+.hdr-refresh-btn{flex-shrink:0;width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);color:white;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:background 0.15s, transform 0.15s;-webkit-tap-highlight-color:transparent}
+.hdr-refresh-btn:hover,.hdr-refresh-btn:focus{background:rgba(255,255,255,0.2);outline:none}
+.hdr-refresh-btn:active{transform:scale(0.92)}
+.hdr-refresh-btn svg{width:20px;height:20px;display:block}
+.hdr-refresh-btn.spinning svg{animation:hdr-spin 0.9s linear infinite}
+.hdr-refresh-btn:disabled{opacity:0.7;cursor:wait}
+@keyframes hdr-spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
 main{flex:1;padding:16px 16px calc(84px + var(--safe-bottom));max-width:560px;width:100%;margin:0 auto;overflow-x:hidden}
 .screen{display:none;animation:fadeIn 0.2s ease-out}
@@ -251,6 +258,12 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
     <h1 id="hdr-title">Conjunto El Mañana</h1>
     <div class="subtitle" id="hdr-subtitle">Hogares de Soacha · 240 residencias</div>
   </div>
+  <button type="button" class="hdr-refresh-btn" id="hdr-refresh" onclick="hardRefresh()" aria-label="Actualizar aplicación" title="Actualizar">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12a9 9 0 1 1-3.5-7.1"/>
+      <polyline points="21 4 21 10 15 10"/>
+    </svg>
+  </button>
 </header>
 
 <main>
@@ -1523,6 +1536,35 @@ function loadLocal() {
   }
 }
 
+/**
+ * Fuerza una recarga completa de la app:
+ *  1. Precarga datos.json con cache:no-store (para que el navegador tenga la versión más reciente).
+ *  2. Recarga el propio index.html añadiendo ?v=<timestamp> para saltar cache HTTP + PWA.
+ * Útil cuando la app se abre como acceso directo en el celular (sin botón visible de refresco del navegador).
+ */
+let _hardRefreshInProgress = false;
+async function hardRefresh() {
+  if (_hardRefreshInProgress) return;
+  _hardRefreshInProgress = true;
+  const btn = $('hdr-refresh');
+  if (btn) { btn.classList.add('spinning'); btn.disabled = true; }
+  try { toast('Actualizando…'); } catch(e){}
+  // 1) Precarga datos.json sin cache para forzar red
+  try {
+    await fetch(DATOS_URL + '?v=' + Date.now(), { cache: 'no-store' });
+  } catch (e) { /* si falla, seguimos con la recarga de HTML */ }
+  // 2) Recarga el HTML con cache-buster
+  try {
+    const u = new URL(window.location.href);
+    u.searchParams.set('v', String(Date.now()));
+    // Usamos replace para no ensuciar el historial del navegador
+    window.location.replace(u.toString());
+  } catch (e) {
+    // Fallback: reload tradicional forzando caché de red
+    try { window.location.reload(true); } catch(_) { window.location.reload(); }
+  }
+}
+
 async function loadRemote() {
   try {
     const url = DATOS_URL + '?v=' + Date.now();
@@ -2735,7 +2777,9 @@ async function copiarUrlPago() {
 }
 
 function setupHeaderTap() {
-  $('app-header').addEventListener('click', () => {
+  $('app-header').addEventListener('click', (e) => {
+    // No contar taps sobre el botón Actualizar (evita activar el admin oculto por accidente)
+    if (e.target && (e.target.closest && e.target.closest('#hdr-refresh'))) return;
     state.hdrTapCount++;
     clearTimeout(state.hdrTapTimer);
     state.hdrTapTimer = setTimeout(() => { state.hdrTapCount = 0; }, 1200);
