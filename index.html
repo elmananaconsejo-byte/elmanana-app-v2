@@ -267,10 +267,56 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
 /* Brand logo helper */
 .brand-mark{display:inline-flex;align-items:center;justify-content:center}
 .brand-mark svg{width:100%;height:100%;display:block}
+
+/* === Gate de clave (overlay full-screen) === */
+.access-gate{position:fixed;inset:0;background:linear-gradient(160deg,#1F3A68 0%,#0F1E3A 100%);
+  z-index:9999;display:none;align-items:center;justify-content:center;padding:24px;
+  font-family:inherit;color:#fff}
+.access-gate.show{display:flex}
+.access-gate .ag-card{background:#fff;color:#1F2937;width:100%;max-width:380px;
+  border-radius:18px;padding:28px 24px;box-shadow:0 20px 50px rgba(0,0,0,.35);text-align:center}
+.access-gate .ag-logo{width:72px;height:72px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center}
+.access-gate .ag-logo svg{width:100%;height:100%}
+.access-gate h2{margin:0 0 4px;font-size:20px;color:#1F3A68;font-weight:700}
+.access-gate .ag-sub{margin:0 0 20px;font-size:13px;color:#64748B;line-height:1.5}
+.access-gate label{display:block;text-align:left;font-size:12px;color:#475569;margin-bottom:6px;font-weight:600}
+.access-gate input[type="password"],.access-gate input[type="text"]{width:100%;padding:12px 14px;
+  border:1.5px solid #E2E8F0;border-radius:10px;font-size:16px;color:#1F2937;
+  background:#F8FAFC;outline:none;transition:border-color .15s,background .15s;-webkit-appearance:none;box-sizing:border-box}
+.access-gate input:focus{border-color:#1F3A68;background:#fff;box-shadow:0 0 0 3px rgba(31,58,104,.1)}
+.access-gate .ag-toggle{display:flex;align-items:center;justify-content:flex-start;gap:6px;
+  font-size:12px;color:#64748B;margin:8px 0 14px;cursor:pointer;user-select:none}
+.access-gate .ag-toggle input{margin:0}
+.access-gate .ag-btn{width:100%;padding:13px;border:none;border-radius:10px;
+  background:#1F3A68;color:#fff;font-size:15px;font-weight:600;cursor:pointer;
+  transition:background .15s,transform .05s}
+.access-gate .ag-btn:hover{background:#15295C}
+.access-gate .ag-btn:active{transform:scale(.98)}
+.access-gate .ag-btn:disabled{opacity:.6;cursor:not-allowed}
+.access-gate .ag-error{font-size:13px;color:#DC2626;margin-top:10px;min-height:18px;font-weight:500}
+.access-gate .ag-foot{margin-top:18px;font-size:11px;color:#94A3B8;line-height:1.4}
+.access-gate .ag-foot a{color:#1F3A68;font-weight:600;text-decoration:none}
 </style>
 </head>
 
 <body>
+
+<!-- Gate de clave: se muestra antes de cualquier pantalla si datos.json define accessHash. -->
+<div class="access-gate" id="access-gate" role="dialog" aria-modal="true" aria-labelledby="ag-title">
+  <div class="ag-card">
+    <div class="ag-logo" id="ag-logo"></div>
+    <h2 id="ag-title">El Mañana</h2>
+    <p class="ag-sub">Esta app es exclusiva para residentes del Conjunto El Mañana. Ingresa la clave que te entregó la administración.</p>
+    <form id="ag-form" onsubmit="return submitAccessGate(event)">
+      <label for="ag-pwd">Clave de acceso</label>
+      <input id="ag-pwd" type="password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="text" required>
+      <label class="ag-toggle"><input type="checkbox" id="ag-show" onchange="toggleAccessVisible()"> Mostrar clave</label>
+      <button type="submit" class="ag-btn" id="ag-submit">Entrar</button>
+      <div class="ag-error" id="ag-error" aria-live="polite"></div>
+    </form>
+    <div class="ag-foot">¿No tienes clave o la perdiste? Contacta al administrador del conjunto.</div>
+  </div>
+</div>
 
 <header class="app-header" id="app-header">
   <div class="logo" id="hdr-logo" aria-label="El Mañana">
@@ -851,6 +897,23 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
       <div class="field-hint">Por defecto es <code>admin2026</code>.</div>
     </div>
 
+    <div class="card">
+      <div class="card-title"><span class="ico">🔒</span> Clave de acceso para residentes</div>
+      <div class="field-hint" style="margin-bottom:10px">Esta es la clave que se le pide a cada residente al abrir la app por primera vez. Una vez ingresada, su dispositivo la recuerda y no se la vuelve a pedir hasta que tú la cambies.</div>
+      <label class="field-label">Estado actual</label>
+      <div id="adm-access-status" style="padding:10px 12px;background:#F1F5F9;border-radius:8px;font-size:13px;margin-bottom:12px">—</div>
+      <label class="field-label">Nueva clave (deja vacío para no cambiar)</label>
+      <input id="adm-access-new" type="text" placeholder="Mínimo 4 caracteres" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <label class="field-label" style="margin-top:8px">Confirmar nueva clave</label>
+      <input id="adm-access-new2" type="text" placeholder="Repite la clave" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="field-hint">Al guardar la configuración (botón abajo) y publicar el <code>datos.json</code>, todos los dispositivos pedirán la nueva clave en su próxima apertura.</div>
+      <div style="height:8px"></div>
+      <button class="btn btn-secondary" type="button" onclick="quitarAccessHash()">🚫 Quitar clave (acceso libre)</button>
+      <div style="height:6px"></div>
+      <button class="btn btn-secondary" type="button" onclick="olvidarEsteDispositivo()">📱 Olvidar este dispositivo</button>
+      <div class="field-hint" style="margin-top:6px">"Olvidar" hace que en este teléfono se vuelva a pedir la clave en la próxima apertura. Útil para probar.</div>
+    </div>
+
     <button class="btn btn-primary" onclick="saveAdminConfig()">💾 Guardar configuración</button>
     <div style="height:8px"></div>
     <button class="btn btn-secondary" onclick="showScreen('home')">Volver</button>
@@ -1032,6 +1095,8 @@ const K = {
   SEQ:'emn_seq', HOGAR:'emn_hogar',
   CONFIG_DRAFT:'emn_config_draft', NEWS_DRAFT:'emn_news_draft',
   NEWS_LIKES:'emn_news_likes', // ids de noticias que este dispositivo ya marcó con "me gusta"
+  ACCESS_TOKEN:'emn_access_token', // hash de la clave que el dispositivo ingresó con éxito
+  CONFIG_CACHE:'emn_config_cache', // último config remoto leído OK (fallback offline)
   // Legacy keys (migrados al arrancar v4)
   CONFIG:'emn_config', NEWS:'emn_news',
 };
@@ -1127,6 +1192,9 @@ Vigencia del manual: Abril 2021 (MC-001)
 
 El manual completo está disponible en la administración.`,
   pwd: 'admin2026',
+  // Hash SHA-256 hex de la clave de acceso que se le pide al residente al abrir la app.
+  // Si está vacío, no hay gate (compatibilidad con datos.json viejos).
+  accessHash: '',
 };
 
 const DEFAULT_NEWS = [{
@@ -1616,6 +1684,10 @@ async function loadRemote() {
     }
 
     state.remoteLoaded = true;
+    // Cachear config remoto para que el gate funcione sin red en boots futuros.
+    try {
+      if (remote.config) store.set(K.CONFIG_CACHE, remote.config);
+    } catch (e) {}
     return true;
   } catch (e) {
     return false;
@@ -2680,6 +2752,10 @@ function renderAdmin() {
   set('adm-descripcion', c.descripcion);
   set('adm-reglamento', c.reglamento);
   set('adm-pwd', c.pwd);
+  // Limpiar inputs de nueva clave (nunca pre-llenamos por seguridad).
+  set('adm-access-new', '');
+  set('adm-access-new2', '');
+  refreshAccessStatusUI();
   renderAdminNewsList();
   $('adm-stat-remote').textContent = state.remoteLoaded ? '✅ Sincronizado' : '❌ No disponible';
   $('adm-stat-news').textContent = state.news.length;
@@ -2688,8 +2764,20 @@ function renderAdmin() {
   $('adm-stat-conseq').textContent = state.user ? pad3(state.user.consecutivo || 0) : '—';
 }
 
-function saveAdminConfig() {
+async function saveAdminConfig() {
   const val = id => ($(id)?.value || '').trim();
+  // Procesar nueva clave de acceso (si la escribió).
+  const accessNew = val('adm-access-new');
+  const accessNew2 = val('adm-access-new2');
+  let nextAccessHash = (state.config && state.config.accessHash) || ''; // por defecto: dejar igual
+  if (accessNew || accessNew2) {
+    if (accessNew !== accessNew2) { toast('Las dos claves de acceso no coinciden.', 'error'); return; }
+    if (accessNew.length < 4)    { toast('La clave de acceso debe tener al menos 4 caracteres.', 'error'); return; }
+    nextAccessHash = await sha256Hex(accessNew);
+    if (!nextAccessHash) { toast('No se pudo generar el hash. Recarga la página.', 'error'); return; }
+    // Para que el admin no quede bloqueado en este mismo dispositivo, actualizamos su token.
+    try { store.set(K.ACCESS_TOKEN, nextAccessHash); } catch (e) {}
+  }
   const c = {
     nombre: val('adm-nombre') || DEFAULTS.nombre,
     subtitulo: val('adm-subtitulo'),
@@ -2714,6 +2802,7 @@ function saveAdminConfig() {
     descripcion: val('adm-descripcion'),
     reglamento: val('adm-reglamento'),
     pwd: val('adm-pwd') || DEFAULTS.pwd,
+    accessHash: nextAccessHash,
   };
   state.config = Object.assign({}, DEFAULTS, c);
   // v4: el admin guarda solo en el DRAFT local. La configuración publicada vive
@@ -2721,7 +2810,36 @@ function saveAdminConfig() {
   store.set(K.CONFIG_DRAFT, c);
   $('hdr-title').textContent = state.config.nombre;
   $('hdr-subtitle').textContent = state.config.subtitulo || '';
+  // Limpiar inputs de nueva clave y refrescar el estado mostrado.
+  ['adm-access-new','adm-access-new2'].forEach(id => { const el = $(id); if (el) el.value = ''; });
+  refreshAccessStatusUI();
   toast('Configuración guardada como borrador. Genera datos.json para publicarla.', 'success');
+}
+
+function refreshAccessStatusUI() {
+  const el = $('adm-access-status'); if (!el) return;
+  const has = !!getCurrentAccessHash();
+  el.innerHTML = has
+    ? '🔒 Clave configurada · los residentes deben ingresarla la primera vez'
+    : '🔓 Sin clave · cualquiera con la URL puede entrar';
+  el.style.color = has ? '#1F3A68' : '#92400E';
+  el.style.background = has ? '#E0F2FE' : '#FEF3C7';
+}
+
+function quitarAccessHash() {
+  if (!confirm('¿Quitar la clave de acceso? Cualquier persona con la URL podrá abrir la app hasta que vuelvas a configurar una clave.')) return;
+  state.config = Object.assign({}, state.config, { accessHash: '' });
+  const draft = store.get(K.CONFIG_DRAFT, {}) || {};
+  draft.accessHash = '';
+  store.set(K.CONFIG_DRAFT, draft);
+  try { store.remove ? store.remove(K.ACCESS_TOKEN) : localStorage.removeItem(K.ACCESS_TOKEN); } catch (e) { try { localStorage.removeItem(K.ACCESS_TOKEN); } catch(_){} }
+  refreshAccessStatusUI();
+  toast('Clave de acceso eliminada del borrador. Recuerda generar y publicar datos.json.', 'success');
+}
+
+function olvidarEsteDispositivo() {
+  try { localStorage.removeItem(K.ACCESS_TOKEN); } catch (e) {}
+  toast('Token de este dispositivo borrado. Al recargar te pedirá la clave de nuevo.', 'success');
 }
 
 function saveNews() {
@@ -2905,6 +3023,97 @@ function setupHeaderTap() {
   });
 }
 
+/* =================== ACCESS GATE =================== */
+// SHA-256 hex de un string. Usa crypto.subtle si está disponible (todos los navegadores
+// modernos sobre HTTPS lo tienen). Devuelve string vacío si no se puede calcular.
+async function sha256Hex(text) {
+  try {
+    if (window.crypto && window.crypto.subtle && typeof TextEncoder !== 'undefined') {
+      const data = new TextEncoder().encode(String(text));
+      const buf = await window.crypto.subtle.digest('SHA-256', data);
+      const arr = Array.from(new Uint8Array(buf));
+      return arr.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+  } catch (e) {}
+  return '';
+}
+
+function getCurrentAccessHash() {
+  const h = (state.config && state.config.accessHash) || '';
+  return String(h || '').trim().toLowerCase();
+}
+
+// Inserta el logo en el card del gate (si existe en el header).
+function paintAccessGateLogo() {
+  try {
+    const target = document.getElementById('ag-logo');
+    const src = document.getElementById('hdr-logo');
+    if (target && src && !target.firstChild) {
+      target.innerHTML = src.innerHTML;
+    }
+  } catch (e) {}
+}
+
+function toggleAccessVisible() {
+  const inp = document.getElementById('ag-pwd');
+  const cb = document.getElementById('ag-show');
+  if (inp && cb) inp.type = cb.checked ? 'text' : 'password';
+}
+
+async function submitAccessGate(ev) {
+  if (ev && ev.preventDefault) ev.preventDefault();
+  const inp = document.getElementById('ag-pwd');
+  const err = document.getElementById('ag-error');
+  const btn = document.getElementById('ag-submit');
+  const expected = getCurrentAccessHash();
+  if (!expected) {
+    // Sin hash configurado: no debería llegar aquí, pero si pasa, dejar entrar.
+    closeAccessGate(); resolveAccessGate(true); return false;
+  }
+  const typed = (inp && inp.value || '').trim();
+  if (!typed) { if (err) err.textContent = 'Escribe la clave'; return false; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Validando…'; }
+  const h = await sha256Hex(typed);
+  if (btn) { btn.disabled = false; btn.textContent = 'Entrar'; }
+  if (h && h.toLowerCase() === expected) {
+    try { store.set(K.ACCESS_TOKEN, h); } catch (e) {}
+    if (err) err.textContent = '';
+    if (inp) inp.value = '';
+    closeAccessGate();
+    resolveAccessGate(true);
+    return false;
+  }
+  if (err) err.textContent = 'Clave incorrecta. Intenta de nuevo.';
+  if (inp) { inp.value = ''; inp.focus(); }
+  return false;
+}
+
+function openAccessGate() {
+  paintAccessGateLogo();
+  const g = document.getElementById('access-gate');
+  if (g) g.classList.add('show');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => { const i = document.getElementById('ag-pwd'); if (i) i.focus(); }, 50);
+}
+function closeAccessGate() {
+  const g = document.getElementById('access-gate');
+  if (g) g.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+let _accessGateResolver = null;
+function resolveAccessGate(ok) { if (_accessGateResolver) { _accessGateResolver(ok); _accessGateResolver = null; } }
+
+// Devuelve true cuando el dispositivo está autorizado a usar la app.
+async function requireAccess() {
+  const expected = getCurrentAccessHash();
+  if (!expected) return true; // sin hash en config → no hay gate (compat con datos.json viejos)
+  const token = String(store.get(K.ACCESS_TOKEN, '') || '').trim().toLowerCase();
+  if (token && token === expected) return true; // dispositivo recordado
+  // Mostrar gate y esperar
+  return new Promise((resolve) => { _accessGateResolver = resolve; openAccessGate(); });
+}
+
 /* =================== INIT =================== */
 async function init() {
   loadLocal();
@@ -2912,17 +3121,27 @@ async function init() {
   setupPayTabs();
   setupHeaderTap();
 
-  // Start: local view
-  $('hdr-title').textContent = state.config.nombre;
-  $('hdr-subtitle').textContent = state.config.subtitulo || '';
-  if (!state.user) showScreen('register'); else showScreen('home');
-
-  // Then: try to load remote (won't block UI)
+  // === GATE DE ACCESO ===
+  // Necesitamos conocer accessHash antes de mostrar nada. Cargamos remoto primero
+  // (con fallback a config cacheado para escenarios offline) y solo después
+  // mostramos el gate si corresponde. La pantalla queda en blanco mientras tanto.
   await loadRemote();
+  // Fallback offline: si remoto falló y tenemos config cacheado de un boot anterior, úsalo.
+  if (!state.remoteLoaded) {
+    try {
+      const cached = store.get(K.CONFIG_CACHE, null);
+      if (cached && typeof cached === 'object') {
+        state.config = Object.assign({}, DEFAULTS, cached, state.config);
+      }
+    } catch (e) {}
+  }
+  const passed = await requireAccess();
+  if (!passed) return; // gate visible, app oculta. No debería ocurrir (resolve siempre con true).
+
   if (!state.news || state.news.length === 0) state.news = DEFAULT_NEWS;
   $('hdr-title').textContent = state.config.nombre;
   $('hdr-subtitle').textContent = state.config.subtitulo || '';
-  if (state.user) renderHome();
+  if (!state.user) showScreen('register'); else { showScreen('home'); renderHome(); }
 
   if ('serviceWorker' in navigator && location.protocol !== 'file:') {
     const swCode = `self.addEventListener('install', e => self.skipWaiting());self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));self.addEventListener('fetch', () => {});`;
