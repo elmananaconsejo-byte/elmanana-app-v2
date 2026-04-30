@@ -568,7 +568,12 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
     </button>
     <button class="service-tile" onclick="openSolicitud('autorizacion-ingreso')">
       <div class="service-icon">🚪</div>
-      <div class="service-info"><div class="t">Autorización de ingreso</div><div class="s">Visitas, mudanzas, domicilios</div></div>
+      <div class="service-info"><div class="t">Autorización de ingreso</div><div class="s">Visitas, domicilios, servicios</div></div>
+      <div class="arrow">›</div>
+    </button>
+    <button class="service-tile" onclick="openSolicitud('mudanza')">
+      <div class="service-icon">📦</div>
+      <div class="service-info"><div class="t">Mudanza</div><div class="s">Ingreso o salida de muebles</div></div>
       <div class="arrow">›</div>
     </button>
     <button class="service-tile" onclick="openSolicitud('parqueadero')">
@@ -598,7 +603,7 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
     </button>
     <button class="service-tile" onclick="openSolicitud('pqrs')">
       <div class="service-icon">💬</div>
-      <div class="service-info"><div class="t">PQRS</div><div class="s">Peticiones, quejas, reclamos, sugerencias</div></div>
+      <div class="service-info"><div class="t">PQRSF</div><div class="s">Peticiones, quejas, reclamos, sugerencias y felicitaciones</div></div>
       <div class="arrow">›</div>
     </button>
     <button class="service-tile" onclick="openSolicitud('otro')">
@@ -669,7 +674,6 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
       <select id="comp-tipo">
         <option value="Administración">Administración</option>
         <option value="Parqueadero">Parqueadero</option>
-        <option value="Intereses / mora">Intereses / mora</option>
         <option value="Multa / sanción">Multa / sanción</option>
         <option value="Salón social">Salón social (reserva)</option>
         <option value="Cuota extraordinaria">Cuota extraordinaria</option>
@@ -881,6 +885,15 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
     </div>
 
     <div class="card">
+      <div class="card-title"><span class="ico">📑</span> Contrato del salón social</div>
+      <div class="field-hint" style="margin-bottom:10px">Carga el contrato (PDF, JPG o PNG) que firmará el residente al reservar el salón. Estará disponible para descarga dentro del trámite de reserva.</div>
+      <div id="adm-salon-contrato-status" style="padding:10px 12px;background:#F1F5F9;border-radius:8px;font-size:13px;margin-bottom:12px">—</div>
+      <input id="adm-salon-contrato-file" type="file" accept="application/pdf,image/*" onchange="onAdminSalonContrato(event)">
+      <div style="height:8px"></div>
+      <button class="btn btn-secondary" type="button" onclick="quitarSalonContrato()">🗑 Quitar contrato</button>
+    </div>
+
+    <div class="card">
       <div class="card-title"><span class="ico">🏠</span> Descripción</div>
       <textarea id="adm-descripcion" rows="5"></textarea>
     </div>
@@ -979,7 +992,7 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
   <div class="admin-tab" data-tab-content="datos" style="display:none">
     <div class="card">
       <div class="card-title"><span class="ico">📊</span> Estado de la app</div>
-      <div class="info-row"><span class="lbl">Versión</span><span class="val">4.0</span></div>
+      <div class="info-row"><span class="lbl">Versión</span><span class="val">4.1</span></div>
       <div class="info-row"><span class="lbl">Datos remotos</span><span class="val" id="adm-stat-remote">—</span></div>
       <div class="info-row"><span class="lbl">Noticias locales</span><span class="val" id="adm-stat-news">—</span></div>
       <div class="info-row"><span class="lbl">Solicitudes enviadas</span><span class="val" id="adm-stat-req">—</span></div>
@@ -1081,7 +1094,7 @@ nav.bottom-nav{position:fixed;left:0;right:0;bottom:0;background:white;padding:6
 
 <script>
 /* =================== CONSTANTS =================== */
-const APP_VERSION = '4.0';
+const APP_VERSION = '4.1';
 // K.USER = perfil del residente (solo dispositivo)
 // K.HIST = historial local de solicitudes (solo dispositivo)
 // K.COMP = historial local de comprobantes (solo dispositivo)
@@ -1195,6 +1208,10 @@ El manual completo está disponible en la administración.`,
   // Hash SHA-256 hex de la clave de acceso que se le pide al residente al abrir la app.
   // Si está vacío, no hay gate (compatibilidad con datos.json viejos).
   accessHash: '',
+  // Contrato del salón social cargado por el administrador. Se guarda como
+  // {nombre, mime, dataUrl}. Cuando existe, los residentes pueden descargarlo
+  // desde el modal de "Reserva de salón social".
+  salonContrato: null,
 };
 
 const DEFAULT_NEWS = [{
@@ -1325,10 +1342,10 @@ Enviado desde la App Oficial del Conjunto El Mañana.`,
   },
   'autorizacion-ingreso': {
     icon:'🚪', title:'Autorización de ingreso',
-    intro:'Registra visitas, mudanzas o servicios para agilizar el ingreso.',
+    intro:'Registra visitas, domicilios o servicios para agilizar el ingreso. Si es una mudanza, usa el trámite "Mudanza".',
     fields: [
       {id:'tipo',label:'Tipo de ingreso',type:'select',required:true,
-        options:['Visita (familiar/amigo)','Mudanza','Domicilio / encomienda','Servicio técnico','Trabajador por horas','Otro']},
+        options:['Visita (familiar/amigo)','Domicilio / encomienda','Servicio técnico','Trabajador por horas','Otro']},
       {id:'nombreVisita',label:'Nombre del visitante o empresa',type:'text',required:true},
       {id:'docVisita',label:'Documento / placa (si aplica)',type:'text'},
       {id:'fechaHora',label:'Fecha y hora prevista',type:'datetime-local',required:true},
@@ -1466,15 +1483,15 @@ ${d.descripcion}
 Enviado desde la App Oficial del Conjunto El Mañana.`,
   },
   'pqrs': {
-    icon:'💬', title:'PQRS',
-    intro:'Peticiones, quejas, reclamos y sugerencias.',
+    icon:'💬', title:'PQRSF',
+    intro:'Peticiones, quejas, reclamos, sugerencias y felicitaciones. Puedes adjuntar evidencias (fotos, videos, documentos) abajo.',
     fields: [
       {id:'tipo',label:'Tipo',type:'select',required:true,options:['Petición','Queja','Reclamo','Sugerencia','Felicitación']},
       {id:'asunto',label:'Asunto',type:'text',required:true},
       {id:'descripcion',label:'Descripción detallada',type:'textarea',required:true,minLen:10},
     ],
     msg: (d,u,c,r) =>
-`PQRS — ${d.tipo.toUpperCase()}
+`PQRSF — ${d.tipo.toUpperCase()}
 Consecutivo: ${r}
 
 Residente: ${u.nombre}
@@ -1531,6 +1548,11 @@ let state = {
   remoteLoaded: false,
   compFile: null, compFileDataUrl: null,
   editingHogar: null,
+  // Adjuntos del trámite que está abierto en el modal de solicitudes.
+  // Se reinicia en openSolicitud() y se consume en enviarSolicitud().
+  solFiles: [],
+  // Datos auxiliares de mudanza (habitantes mayores con sus documentos).
+  mudanzaHabitantes: [],
 };
 
 /* =================== HELPERS =================== */
@@ -2240,15 +2262,27 @@ function getNextConsecutivo() {
 /* =================== SOLICITUDES =================== */
 function openSolicitud(tipo) {
   if (!state.user) { showScreen('register'); return; }
+  // Mudanza tiene flujo propio (Ingreso / Salida).
+  if (tipo === 'mudanza') return openMudanzaModal();
   const s = SOLICITUDES[tipo];
   if (!s) return;
   state.currentSolicitud = { tipo, def: s };
+  state.solFiles = [];
   $('modal-icon').textContent = s.icon;
   $('modal-title').textContent = s.title;
 
   const nextRef = peekNextConsecutivo();
   let html = `<div class="modal-ref"><div style="color:var(--c-text-muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Consecutivo de esta solicitud</div><b>${nextRef}</b></div>`;
   html += `<p style="font-size:13px;color:var(--c-text-muted);margin-bottom:12px">${s.intro}</p>`;
+
+  // Caso especial: Reserva de salón social → mostrar acceso al contrato si el admin lo cargó.
+  if (tipo === 'reserva-salon' && state.config && state.config.salonContrato && state.config.salonContrato.dataUrl) {
+    html += `<div style="background:#E0F2FE;border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;line-height:1.45">
+      <b>📑 Contrato del salón social</b><br>
+      Descárgalo, léelo y guárdalo. Al aceptar el reglamento confirmas haber leído este contrato.<br>
+      <button class="btn btn-secondary btn-sm" type="button" style="margin-top:8px;width:auto" onclick="descargarContratoSalon()">⬇️ Descargar contrato</button>
+    </div>`;
+  }
 
   let col1 = '';
   s.fields.forEach(f => {
@@ -2257,6 +2291,9 @@ function openSolicitud(tipo) {
     else if (f.col === 2) { html += `<div class="row-2"><div>${col1}</div><div>${fld}</div></div>`; col1 = ''; }
     else html += fld;
   });
+
+  // Bloque genérico de adjuntos (todos los trámites).
+  html += renderAdjuntosBlock();
 
   html += `
     <div style="margin-top:18px">
@@ -2267,6 +2304,49 @@ function openSolicitud(tipo) {
 
   $('modal-body').innerHTML = html;
   $('modal-backdrop').classList.add('show');
+}
+
+/* ---------- Adjuntos genéricos para cualquier trámite ---------- */
+function renderAdjuntosBlock(opts) {
+  const o = opts || {};
+  const titulo = o.titulo || 'Adjuntos (opcional)';
+  const hint = o.hint || 'Foto del recibo, soporte de pago, evidencias, planos, etc. Hasta 4 archivos.';
+  return `
+    <div style="margin-top:16px;padding:12px;background:#F8FAFC;border-radius:10px;border:1px solid #E2E8F0">
+      <div style="font-weight:600;font-size:13px;color:var(--c-text);margin-bottom:4px">📎 ${titulo}</div>
+      <div style="font-size:12px;color:var(--c-text-muted);margin-bottom:10px">${hint}</div>
+      <input id="sol-file-input" type="file" multiple accept="image/*,application/pdf" onchange="onAdjuntosSolicitud(event)">
+      <div id="sol-files-list" style="margin-top:10px"></div>
+    </div>`;
+}
+
+function onAdjuntosSolicitud(e) {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
+  // Tope: máximo 4 adjuntos en total, cada uno ≤ 4 MB.
+  const MAX_FILES = 4, MAX_SIZE = 4 * 1024 * 1024;
+  for (const f of files) {
+    if (state.solFiles.length >= MAX_FILES) { toast('Máximo ' + MAX_FILES + ' adjuntos por trámite', 'error'); break; }
+    if (f.size > MAX_SIZE) { toast(f.name + ' supera 4 MB', 'error'); continue; }
+    state.solFiles.push(f);
+  }
+  e.target.value = '';
+  renderAdjuntosList();
+}
+
+function renderAdjuntosList() {
+  const el = $('sol-files-list'); if (!el) return;
+  if (!state.solFiles.length) { el.innerHTML = '<div style="font-size:12px;color:var(--c-text-muted)">Sin adjuntos.</div>'; return; }
+  el.innerHTML = state.solFiles.map((f, i) => `
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;background:#fff;border-radius:8px;border:1px solid #E2E8F0;margin-bottom:6px;font-size:12px">
+      <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">📄 ${escapeHtml(f.name)} <span style="color:var(--c-text-muted)">· ${(f.size/1024).toFixed(0)} KB</span></div>
+      <button type="button" onclick="quitarAdjuntoSolicitud(${i})" style="background:transparent;border:none;color:#A33B3B;font-weight:600;cursor:pointer;padding:2px 6px">✕</button>
+    </div>`).join('');
+}
+
+function quitarAdjuntoSolicitud(idx) {
+  state.solFiles.splice(idx, 1);
+  renderAdjuntosList();
 }
 
 function renderField(f) {
@@ -2302,17 +2382,28 @@ function collectSolicitud() {
   return data;
 }
 
-function enviarSolicitud(_canal) {
+async function enviarSolicitud(_canal) {
   const data = collectSolicitud();
   if (!data) return;
   const s = state.currentSolicitud.def;
   const tipo = state.currentSolicitud.tipo;
   const ref = getNextConsecutivo();
-  const msg = s.msg(data, state.user, state.config, ref);
+  let msg = s.msg(data, state.user, state.config, ref);
+
+  // Adjuntos: si hay, los listamos al final del cuerpo. En móviles compatibles
+  // intentamos primero navigator.share({files}), que abre la hoja nativa con el
+  // adjunto real. Si no es posible, el usuario deberá adjuntarlos manualmente.
+  const files = (state.solFiles || []).slice();
+  if (files.length) {
+    msg += '\n\nADJUNTOS (' + files.length + '):\n';
+    files.forEach((f, i) => { msg += `  ${i + 1}. ${f.name} · ${(f.size/1024).toFixed(0)} KB\n`; });
+    msg += '\nNOTA: Si tu app de correo no adjuntó automáticamente los archivos, añádelos manualmente antes de enviar.';
+  }
 
   state.hist.unshift({
     id: Date.now().toString(), tipo, title: s.title, canal: 'email', data, ref,
     snippet: (data.descripcion || data.obs || data.asunto || data.motivo || '').slice(0, 120),
+    adjuntos: files.length,
     date: Date.now(),
   });
   if (state.hist.length > 80) state.hist.pop();
@@ -2323,14 +2414,294 @@ function enviarSolicitud(_canal) {
   const cc = [state.config.email_2, state.user.email].filter(Boolean).join(',');
   if (!to) { toast('Admin no ha configurado correo principal', 'error'); return; }
 
+  // Intento 1: hoja de compartir nativa con archivos (Android/iOS recientes).
+  if (files.length && navigator.canShare && navigator.canShare({ files })) {
+    try {
+      await navigator.share({ title: subj, text: msg, files });
+      toast('Solicitud ' + ref + ' compartida', 'success');
+      closeModal();
+      state.solFiles = [];
+      showScreen('solicitudes');
+      return;
+    } catch (e) { /* el usuario canceló o falló; caemos al picker */ }
+  }
+
   closeModal();
-  sendEmail({ to, cc, subject: subj, body: msg, successMsg: 'Solicitud ' + ref + ' enviada' });
+  state.solFiles = [];
+  const successMsg = files.length
+    ? '⚠️ Adjunta manualmente ' + files.length + ' archivo(s) en el correo'
+    : 'Solicitud ' + ref + ' enviada';
+  sendEmail({ to, cc, subject: subj, body: msg, successMsg });
   showScreen('solicitudes');
 }
 
 function closeModal() {
   $('modal-backdrop').classList.remove('show');
   state.currentSolicitud = null;
+  state.solFiles = [];
+  state.mudanzaHabitantes = [];
+}
+
+/* =================== MUDANZA (flujo Ingreso / Salida) =================== */
+function openMudanzaModal() {
+  if (!state.user) { showScreen('register'); return; }
+  state.currentSolicitud = { tipo: 'mudanza', def: { title: 'Mudanza', icon: '📦' } };
+  state.solFiles = [];
+  state.mudanzaHabitantes = [];
+
+  $('modal-icon').textContent = '📦';
+  $('modal-title').textContent = 'Mudanza';
+  const nextRef = peekNextConsecutivo();
+
+  let html = `<div class="modal-ref"><div style="color:var(--c-text-muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px">Consecutivo de esta solicitud</div><b>${nextRef}</b></div>`;
+  html += `<p style="font-size:13px;color:var(--c-text-muted);margin-bottom:12px">Solicita autorización con mínimo 48 horas de anticipación. Horario: L–V 8:00 a.m. – 5:00 p.m. · Sáb 8:00 a.m. – 1:00 p.m. Domingos y festivos no se permiten mudanzas.</p>`;
+
+  html += `<label class="field-label">Tipo de mudanza <span class="req">*</span></label>
+    <select id="mud-tipo" onchange="onMudanzaTipoChange()">
+      <option value="">Selecciona…</option>
+      <option value="Ingreso">Ingreso (entrada al conjunto)</option>
+      <option value="Salida">Salida (desocupar el inmueble)</option>
+    </select>`;
+
+  html += `<div id="mud-dyn" style="margin-top:6px"></div>`;
+
+  html += `<div style="margin-top:18px">
+    <button id="mud-submit" class="btn btn-primary" onclick="enviarMudanza()" disabled>📧 Enviar solicitud</button>
+    <div style="height:8px"></div>
+    <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+  </div>`;
+
+  $('modal-body').innerHTML = html;
+  $('modal-backdrop').classList.add('show');
+}
+
+function onMudanzaTipoChange() {
+  const tipo = $('mud-tipo').value;
+  const dyn = $('mud-dyn');
+  const submit = $('mud-submit');
+  state.solFiles = [];
+  state.mudanzaHabitantes = [];
+
+  if (tipo === 'Ingreso') {
+    dyn.innerHTML = `
+      <label class="field-label">Fecha y hora de la mudanza <span class="req">*</span></label>
+      <input id="mud-fechaHora" type="datetime-local">
+      <label class="field-label">Empresa o persona que realiza la mudanza</label>
+      <input id="mud-empresa" type="text" placeholder="Nombre de la empresa o de quien transporta">
+      <label class="field-label">Placa(s) del vehículo</label>
+      <input id="mud-placa" type="text" placeholder="ABC123">
+
+      <div style="margin-top:14px;padding:12px;background:#F8FAFC;border-radius:10px;border:1px solid #E2E8F0">
+        <div style="font-weight:600;font-size:13px;margin-bottom:4px">👥 Habitantes mayores de edad <span class="req">*</span></div>
+        <div style="font-size:12px;color:var(--c-text-muted);margin-bottom:10px">Registra a cada habitante mayor de edad que vivirá en el inmueble. Adjunta una copia de su documento de identidad. Esta información se enviará al administrador.</div>
+        <div id="mud-hab-list"></div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="addMudanzaHabitante()" style="width:auto;margin-top:8px">+ Agregar habitante</button>
+      </div>
+
+      <label class="field-label" style="margin-top:14px">Observaciones</label>
+      <textarea id="mud-obs" rows="2" placeholder="Volumen aproximado, requerimientos especiales, etc."></textarea>
+      ${renderAdjuntosBlock({ titulo: 'Adjuntos adicionales', hint: 'Inventario, contrato de arrendamiento, autorización del propietario, etc.' })}
+    `;
+    addMudanzaHabitante(); // arranca con 1 fila para guiar al usuario
+    submit.disabled = false;
+  } else if (tipo === 'Salida') {
+    // Solo propietario puede tramitar salida.
+    const esProp = state.user && (state.user.rol === 'Propietario');
+    if (!esProp) {
+      dyn.innerHTML = `
+        <div style="margin-top:12px;padding:14px;background:#FEF2F2;border-radius:10px;border:1px solid #FECACA;font-size:13px;line-height:1.5">
+          <b>🚫 Trámite restringido al propietario</b><br>
+          La mudanza de salida (desocupación del inmueble) sólo puede ser solicitada por el propietario registrado en la app. Tu perfil actual figura como <b>${escapeHtml(state.user ? state.user.rol : '—')}</b>.<br><br>
+          Si eres propietario y tu perfil quedó como arrendatario, puedes corregirlo desde "Mi cuenta" → "Editar mis datos". Si eres arrendatario, coordina con el propietario para que tramite la salida.
+        </div>`;
+      submit.disabled = true;
+      return;
+    }
+    dyn.innerHTML = `
+      <label class="field-label">Fecha y hora prevista de salida <span class="req">*</span></label>
+      <input id="mud-fechaHora" type="datetime-local">
+      <label class="field-label">Motivo de la salida</label>
+      <select id="mud-motivo">
+        <option value="Venta del inmueble">Venta del inmueble</option>
+        <option value="Cambio de arrendatario">Cambio de arrendatario</option>
+        <option value="Traslado del propietario">Traslado del propietario</option>
+        <option value="Otro">Otro</option>
+      </select>
+      <label class="field-label">Empresa o persona que realiza la mudanza</label>
+      <input id="mud-empresa" type="text" placeholder="Nombre de la empresa o de quien transporta">
+      <label class="field-label">Placa(s) del vehículo</label>
+      <input id="mud-placa" type="text" placeholder="ABC123">
+
+      <div style="margin-top:14px;padding:12px;background:#FFF8E1;border-radius:10px;border:1px solid #FCD34D;font-size:13px;line-height:1.5">
+        <b>💵 Validación de paz y salvo</b><br>
+        Para autorizar la salida, el inmueble debe estar a paz y salvo con la administración (cuotas, intereses, multas, servicios comunes).
+        <div style="height:10px"></div>
+        <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5">
+          <input type="checkbox" id="mud-paz" style="width:auto;margin-top:3px">
+          <span>Declaro estar a paz y salvo con la administración. Entiendo que la administración validará esta información antes de autorizar el ingreso del vehículo de mudanza.</span>
+        </label>
+      </div>
+
+      <label class="field-label" style="margin-top:14px">Observaciones</label>
+      <textarea id="mud-obs" rows="2" placeholder="Detalles adicionales relevantes para la administración"></textarea>
+      ${renderAdjuntosBlock({ titulo: 'Adjuntos (opcional)', hint: 'Promesa de venta, contrato, paz y salvo previo, etc.' })}
+    `;
+    submit.disabled = false;
+  } else {
+    dyn.innerHTML = '';
+    submit.disabled = true;
+  }
+}
+
+function addMudanzaHabitante() {
+  const id = 'h' + Date.now() + Math.floor(Math.random()*1000);
+  state.mudanzaHabitantes.push({ id, nombre: '', tipoDoc: 'CC', doc: '', file: null });
+  renderMudanzaHabitantes();
+}
+
+function renderMudanzaHabitantes() {
+  const list = $('mud-hab-list'); if (!list) return;
+  list.innerHTML = state.mudanzaHabitantes.map((h, i) => `
+    <div style="background:#fff;border:1px solid #E2E8F0;border-radius:10px;padding:10px;margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+        <b style="font-size:13px">Habitante ${i+1}</b>
+        <button type="button" onclick="removeMudanzaHabitante(${i})" style="background:transparent;border:none;color:#A33B3B;font-weight:600;cursor:pointer;font-size:12px">🗑 Quitar</button>
+      </div>
+      <input type="text" placeholder="Nombre completo" value="${escapeHtml(h.nombre)}" oninput="updateMudanzaHabitante(${i},'nombre',this.value)" style="margin-bottom:6px">
+      <div class="row-2">
+        <select onchange="updateMudanzaHabitante(${i},'tipoDoc',this.value)">
+          <option value="CC" ${h.tipoDoc==='CC'?'selected':''}>CC</option>
+          <option value="CE" ${h.tipoDoc==='CE'?'selected':''}>CE</option>
+          <option value="Pasaporte" ${h.tipoDoc==='Pasaporte'?'selected':''}>Pasaporte</option>
+        </select>
+        <input type="text" placeholder="Número de documento" value="${escapeHtml(h.doc)}" oninput="updateMudanzaHabitante(${i},'doc',this.value)">
+      </div>
+      <label class="field-label" style="margin-top:8px">Documento de identidad (foto/PDF)</label>
+      <input type="file" accept="image/*,application/pdf" onchange="onMudanzaHabitanteFile(${i}, event)">
+      <div style="font-size:12px;color:var(--c-text-muted);margin-top:4px" id="mud-hab-file-${i}">${h.file ? '📄 ' + escapeHtml(h.file.name) + ' · ' + (h.file.size/1024).toFixed(0) + ' KB' : 'Sin archivo'}</div>
+    </div>`).join('');
+}
+
+function updateMudanzaHabitante(idx, key, val) {
+  if (state.mudanzaHabitantes[idx]) state.mudanzaHabitantes[idx][key] = val;
+}
+
+function onMudanzaHabitanteFile(idx, e) {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  if (f.size > 4 * 1024 * 1024) { toast(f.name + ' supera 4 MB', 'error'); e.target.value = ''; return; }
+  state.mudanzaHabitantes[idx].file = f;
+  // Renombramos el File para que en el correo se identifique al habitante.
+  const nombre = (state.mudanzaHabitantes[idx].nombre || ('habitante_' + (idx+1))).replace(/[^a-z0-9]+/gi, '_');
+  const ext = (f.name.match(/\.[a-z0-9]+$/i) || ['.pdf'])[0];
+  try {
+    state.mudanzaHabitantes[idx].file = new File([f], 'documento_' + nombre + ext, { type: f.type });
+  } catch (err) { /* algunos navegadores no permiten new File con blob; usamos el original */ }
+  renderMudanzaHabitantes();
+}
+
+function removeMudanzaHabitante(idx) {
+  state.mudanzaHabitantes.splice(idx, 1);
+  renderMudanzaHabitantes();
+}
+
+async function enviarMudanza() {
+  const tipo = $('mud-tipo').value;
+  if (!tipo) { toast('Selecciona el tipo de mudanza', 'error'); return; }
+  const fechaHora = $('mud-fechaHora') ? $('mud-fechaHora').value : '';
+  if (!fechaHora) { toast('Indica la fecha y hora', 'error'); return; }
+  const empresa = ($('mud-empresa') ? $('mud-empresa').value : '').trim();
+  const placa = ($('mud-placa') ? $('mud-placa').value : '').trim();
+  const obs = ($('mud-obs') ? $('mud-obs').value : '').trim();
+
+  let detalleEspecifico = '';
+  const habitantesFiles = [];
+
+  if (tipo === 'Ingreso') {
+    if (!state.mudanzaHabitantes.length) { toast('Registra al menos un habitante mayor de edad', 'error'); return; }
+    for (let i = 0; i < state.mudanzaHabitantes.length; i++) {
+      const h = state.mudanzaHabitantes[i];
+      if (!h.nombre || !h.doc) { toast('Completa nombre y documento del habitante ' + (i+1), 'error'); return; }
+      if (h.file) habitantesFiles.push(h.file);
+    }
+    detalleEspecifico = '\nHABITANTES MAYORES DE EDAD QUE INGRESAN AL INMUEBLE:\n';
+    state.mudanzaHabitantes.forEach((h, i) => {
+      detalleEspecifico += `  ${i+1}. ${h.nombre} — ${h.tipoDoc} ${h.doc}` + (h.file ? ` (documento adjunto: ${h.file.name})` : ' (documento NO adjunto)') + '\n';
+    });
+  } else if (tipo === 'Salida') {
+    if (!state.user || state.user.rol !== 'Propietario') { toast('Solo el propietario puede tramitar la salida', 'error'); return; }
+    const motivo = $('mud-motivo') ? $('mud-motivo').value : '';
+    const paz = $('mud-paz') && $('mud-paz').checked;
+    if (!paz) { toast('Debes confirmar el paz y salvo', 'error'); return; }
+    detalleEspecifico = `\nMotivo de la salida: ${motivo}\nPaz y salvo declarado por el propietario: SÍ (sujeto a validación de la administración)\n`;
+  }
+
+  const ref = getNextConsecutivo();
+  const u = state.user;
+  let body =
+`SOLICITUD DE MUDANZA — ${tipo.toUpperCase()}
+Consecutivo: ${ref}
+
+Residente solicitante: ${u.nombre}
+Calidad: ${u.rol}
+Documento: ${u.tipoDoc} ${u.doc}
+Bloque/Casa: ${u.bloque} / ${u.casa}
+Teléfono: ${u.tel}
+Correo: ${u.email}
+
+Tipo de mudanza: ${tipo}
+Fecha y hora: ${fechaHora}
+Empresa / persona transportadora: ${empresa || '(No especificada)'}
+Placa(s) del vehículo: ${placa || '(No especificadas)'}
+${detalleEspecifico}
+Observaciones:
+${obs || '(Ninguna)'}
+
+Enviado desde la App Oficial del Conjunto El Mañana.`;
+
+  // Combinar adjuntos generales + documentos de habitantes
+  const todos = (state.solFiles || []).concat(habitantesFiles);
+  if (todos.length) {
+    body += '\n\nADJUNTOS (' + todos.length + '):\n';
+    todos.forEach((f, i) => { body += `  ${i+1}. ${f.name} · ${(f.size/1024).toFixed(0)} KB\n`; });
+    body += '\nNOTA: Si tu app de correo no adjuntó automáticamente los archivos, añádelos manualmente antes de enviar.';
+  }
+
+  state.hist.unshift({
+    id: Date.now().toString(),
+    tipo: 'mudanza',
+    title: 'Mudanza — ' + tipo,
+    canal: 'email',
+    data: { tipo, fechaHora, empresa, placa, obs, habitantes: state.mudanzaHabitantes.map(h => ({ nombre: h.nombre, tipoDoc: h.tipoDoc, doc: h.doc })) },
+    ref,
+    snippet: tipo + (empresa ? ' · ' + empresa : ''),
+    adjuntos: todos.length,
+    date: Date.now(),
+  });
+  if (state.hist.length > 80) state.hist.pop();
+  store.set(K.HIST, state.hist);
+
+  const subj = `[${ref}] Mudanza ${tipo} — ${u.nombre} (Bloque ${u.bloque}·Casa ${u.casa})`;
+  const to = state.config.email_1;
+  const cc = [state.config.email_2, u.email].filter(Boolean).join(',');
+  if (!to) { toast('Admin no ha configurado correo principal', 'error'); return; }
+
+  if (todos.length && navigator.canShare && navigator.canShare({ files: todos })) {
+    try {
+      await navigator.share({ title: subj, text: body, files: todos });
+      toast('Solicitud ' + ref + ' compartida', 'success');
+      closeModal();
+      showScreen('solicitudes');
+      return;
+    } catch (e) { /* fallback */ }
+  }
+
+  closeModal();
+  const successMsg = todos.length
+    ? '⚠️ Adjunta manualmente ' + todos.length + ' archivo(s) en el correo'
+    : 'Solicitud ' + ref + ' enviada';
+  sendEmail({ to, cc, subject: subj, body, successMsg });
+  showScreen('solicitudes');
 }
 
 function renderHist() {
@@ -2756,6 +3127,7 @@ function renderAdmin() {
   set('adm-access-new', '');
   set('adm-access-new2', '');
   refreshAccessStatusUI();
+  refreshSalonContratoStatus();
   renderAdminNewsList();
   $('adm-stat-remote').textContent = state.remoteLoaded ? '✅ Sincronizado' : '❌ No disponible';
   $('adm-stat-news').textContent = state.news.length;
@@ -2803,6 +3175,9 @@ async function saveAdminConfig() {
     reglamento: val('adm-reglamento'),
     pwd: val('adm-pwd') || DEFAULTS.pwd,
     accessHash: nextAccessHash,
+    // El contrato del salón se actualiza por su propio handler (onAdminSalonContrato).
+    // Aquí se preserva lo que ya esté en state.config para no borrarlo al guardar.
+    salonContrato: (state.config && state.config.salonContrato) || null,
   };
   state.config = Object.assign({}, DEFAULTS, c);
   // v4: el admin guarda solo en el DRAFT local. La configuración publicada vive
@@ -2840,6 +3215,80 @@ function quitarAccessHash() {
 function olvidarEsteDispositivo() {
   try { localStorage.removeItem(K.ACCESS_TOKEN); } catch (e) {}
   toast('Token de este dispositivo borrado. Al recargar te pedirá la clave de nuevo.', 'success');
+}
+
+/* =================== CONTRATO DEL SALÓN =================== */
+function onAdminSalonContrato(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  // Tope blando: 1.8 MB en base64 ≈ 2.4 MB de archivo. Evita inflar datos.json.
+  const MAX = 1.8 * 1024 * 1024;
+  if (file.size > MAX) {
+    toast('El archivo supera 1.8 MB. Usa una versión más liviana.', 'error');
+    e.target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    if (!state.config) state.config = Object.assign({}, DEFAULTS);
+    state.config.salonContrato = {
+      nombre: file.name || 'contrato_salon',
+      mime: file.type || 'application/octet-stream',
+      dataUrl: reader.result,
+      size: file.size,
+    };
+    // Persistir en el borrador para que sobreviva al recargar antes de generar datos.json.
+    const draft = store.get(K.CONFIG_DRAFT, {}) || {};
+    draft.salonContrato = state.config.salonContrato;
+    store.set(K.CONFIG_DRAFT, draft);
+    refreshSalonContratoStatus();
+    toast('Contrato cargado. Recuerda generar datos.json para publicarlo.', 'success');
+  };
+  reader.onerror = () => toast('No se pudo leer el archivo', 'error');
+  reader.readAsDataURL(file);
+}
+
+function quitarSalonContrato() {
+  if (!state.config || !state.config.salonContrato) { toast('No hay contrato cargado'); return; }
+  if (!confirm('¿Quitar el contrato del salón social?')) return;
+  state.config.salonContrato = null;
+  const draft = store.get(K.CONFIG_DRAFT, {}) || {};
+  draft.salonContrato = null;
+  store.set(K.CONFIG_DRAFT, draft);
+  const fi = $('adm-salon-contrato-file'); if (fi) fi.value = '';
+  refreshSalonContratoStatus();
+  toast('Contrato eliminado del borrador. Genera datos.json para publicar.', 'success');
+}
+
+function refreshSalonContratoStatus() {
+  const el = $('adm-salon-contrato-status'); if (!el) return;
+  const sc = state.config && state.config.salonContrato;
+  if (sc && sc.dataUrl) {
+    const sizeKb = sc.size ? (sc.size / 1024).toFixed(0) + ' KB · ' : '';
+    el.innerHTML = `📑 <b>${escapeHtml(sc.nombre)}</b><br><span style="color:var(--c-text-muted);font-size:12px">${sizeKb}${escapeHtml(sc.mime || '')}</span>`;
+    el.style.background = '#E0F2FE';
+    el.style.color = '#1F3A68';
+  } else {
+    el.textContent = '📭 Sin contrato cargado';
+    el.style.background = '#FEF3C7';
+    el.style.color = '#92400E';
+  }
+}
+
+function descargarContratoSalon() {
+  const sc = state.config && state.config.salonContrato;
+  if (!sc || !sc.dataUrl) { toast('El administrador aún no ha publicado el contrato', 'error'); return; }
+  try {
+    const a = document.createElement('a');
+    a.href = sc.dataUrl;
+    a.download = sc.nombre || 'contrato_salon';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast('Descargando contrato', 'success');
+  } catch (e) {
+    toast('No se pudo descargar el contrato', 'error');
+  }
 }
 
 function saveNews() {
